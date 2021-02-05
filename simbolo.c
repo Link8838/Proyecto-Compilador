@@ -1,4 +1,7 @@
 #include "simbolo.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 simbolo *crea_simbolo(char *id, int dir, int type, int var, Lista *args) {
   simbolo *t_out = malloc(sizeof(simbolo));
