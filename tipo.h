@@ -1,3 +1,5 @@
+#include "lista.h"
+#include "tokens.h"
 /**
  * Estructura para modelar entradas de la TT
  */
