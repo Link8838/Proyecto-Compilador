@@ -1,5 +1,5 @@
 #include "lista.h"
-#include "tokens.h"
+
 
 /**
  * Estructura para modelar símbolos de la TS
@@ -8,7 +8,7 @@ typedef struct simbolo {
   int tipo;
   int dir; //dirección
   char *id; //identificador
-  int var; 
+  int var;
   Lista *args; //argumentos
 } simbolo ;
 

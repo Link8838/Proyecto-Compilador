@@ -9,6 +9,8 @@
 #include "parser.h"
 #include "tokens.h"
 #include "pila.h"
+#include "simbolo.h"
+#include "tipo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -39,13 +41,21 @@ int eat(int clase){
 
 void parse(token *tk) {
   tA = tk;
+  tipo tipoV = crea_entrada_tipo(0,"VOID",4,-1,-1);
+  tipo tipoI = crea_entrada_tipo(1,"INT",4,-1,-1);
+  tipo tipoD = crea_entrada_tipo(2,"DOUBLE",8,-1,-1);
+  tipo tipoF = crea_entrada_tipo(3,"FLOAT",4,-1,-1);
+  tipo tipoC = crea_entrada_tipo(4,"CHAR",1,-1,-1);
   piladeTipos = createStack();
-
   piladeSimbolos = createStack();
-  /* Tabla de símbolos */
   tablaSimbolos = lista_nueva();
-  /* Tabla de tipos */
   tablaTipos = lista_nueva();
+
+  lista_agrega_inicio(tablaTipos, tipoC);
+  lista_agrega_inicio(tablaTipos, tipoF);
+  lista_agrega_inicio(tablaTipos, tipoD);
+  lista_agrega_inicio(tablaTipos, tipoI);
+  lista_agrega_inicio(tablaTipos, tipoV);
 
   Programa();
 
