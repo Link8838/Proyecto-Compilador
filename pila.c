@@ -1,7 +1,7 @@
 // C program for array implementation of stack
 #include <stdio.h>
 #include <stdlib.h>
-#include "tokens.h"
+
 
 // A structure to represent a stack
 struct Stack {
@@ -59,8 +59,7 @@ int tamano(struct Stack* stack){
 int main()
 {
     struct Stack* stack = createStack();
-    char* ayuda = "1234";
-    struct token* symb = crea_token(COMA,ayuda);
+   
 
     push(stack,symb);
 

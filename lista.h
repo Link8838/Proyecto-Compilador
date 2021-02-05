@@ -83,9 +83,9 @@ void* lista_elimina_ultimo(Lista* lista);
 NodoLista* lista_dame (Lista* lista, int indice);
 
 
-NodoLista *lista_busca(Lista *lista, void *elemento);
+int lista_busca(Lista *lista, void *elemento);
 
-NodoLista *busca_nodo(NodoLista *nodo, void *elemento);
+int busca_nodo(NodoLista *nodo, void *elemento);
      
 /**
  *Libera memoria usada por la lista pero no 

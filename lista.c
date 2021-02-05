@@ -74,41 +74,7 @@ void lista_agrega_final(Lista* lista, void*  elemento) {
         }
 }
 
-void lista_inserta_antes(Lista* lista, NodoLista* nodo, void* elemento) {
-        assert(lista != NULL && nodo != NULL && elemento != NULL);
-        assert((nodo -> anterior != NULL && nodo != lista->cabeza) ||
-               (nodo -> anterior == NULL && nodo == lista -> cabeza));
-        NodoLista* nuevo = nodo_lista_nuevo(elemento);
-        if (nodo -> anterior == NULL) {
-                nodo -> anterior = nuevo;
-                nuevo -> siguiente = nodo;
-                lista -> cabeza = nuevo;
-        } else {
-                (nodo -> anterior) -> siguiente = nuevo;
-                nuevo -> anterior = nodo -> anterior;
-                nodo -> anterior = nuevo;
-                nuevo -> siguiente = nodo;
-        }
-        lista -> longitud++;
-}
 
-void lista_inserta_despues(Lista* lista, NodoLista* nodo, void* elemento) {
-        assert(lista != NULL && nodo != NULL && elemento != NULL);
-        assert((nodo -> siguiente != NULL && nodo != lista -> rabo) ||
-               (nodo -> siguiente == NULL && nodo == lista -> rabo));
-        NodoLista* nuevo = nodo_lista_nuevo(elemento);
-        if (nodo -> siguiente == NULL) {
-                nodo -> siguiente = nuevo;
-                nuevo -> anterior = nodo;
-                lista -> rabo = nuevo;
-        } else {
-                (nodo -> siguiente) -> anterior = nuevo;
-                nuevo -> siguiente = nodo -> siguiente;
-                nodo -> siguiente = nuevo;
-                nuevo -> anterior = nodo;
-        }
-        lista -> longitud++;
-}
 
 static void l_elimina_nodo(Lista* lista, NodoLista* nodo) {
         lista -> longitud--;
@@ -127,13 +93,6 @@ static void l_elimina_nodo(Lista* lista, NodoLista* nodo) {
         free(nodo);
 }
 
-void lista_elimina(Lista* lista, void* elemento) {
-        assert(lista != NULL && elemento != NULL);
-        NodoLista* nodo = lista_busca(lista, elemento);
-        if (nodo == NULL)
-                return;
-        l_elimina_nodo(lista, nodo);
-}
 
 void* lista_elimina_primero(Lista* lista) {
         assert(lista != NULL && lista -> cabeza != NULL);
@@ -154,15 +113,17 @@ void lista_elimina_nodo(Lista* lista, NodoLista* nodo) {
         l_elimina_nodo(lista, nodo);
 }
 
-NodoLista* lista_busca(Lista* lista, void* elemento) {
+int lista_busca(Lista* lista, void* elemento) {
         assert(lista != NULL);
         return busca_nodo(lista -> cabeza, elemento);
 }
 
-NodoLista* busca_nodo(NodoLista* nodo, void* elemento) {
-        assert(nodo != NULL && elemento != NULL);
-        if (nodo -> elemento == elemento) {
-                return nodo;
+int busca_nodo(NodoLista* nodo, void* elemento) {
+        assert(elemento != NULL);
+        if (nodo == NULL ){
+        	return 0;
+		}else if (nodo -> elemento == elemento) {
+                return 1;
         } else {
                 return busca_nodo(nodo -> siguiente, elemento);
         }
@@ -191,16 +152,6 @@ Lista* lista_reversa(Lista* lista) {
         return reversa;
 }
 
-Lista* lista_copia(Lista* lista) {
-        assert(lista != NULL);
-        Lista* copia = lista_nueva();
-        NodoLista* tmp = lista->cabeza;
-        while (tmp != NULL) {
-                lista_agrega_final(copia, tmp -> elemento);
-                tmp = tmp -> siguiente;
-        }
-        return copia;
-}
 
 
 static void lista_libera_aux(Lista* lista, bool todo) {
@@ -238,4 +189,15 @@ NodoLista* nodo_lista_anterior(NodoLista* nodo) {
 NodoLista* nodo_lista_siguiente(NodoLista* nodo) {
         assert(nodo != NULL);
         return nodo -> siguiente;
+}
+
+int main() {
+	
+	Lista* list = lista_nueva();
+	lista_agrega_inicio(list , 2);
+	lista_agrega_inicio(list , 3);
+	lista_agrega_inicio(list , 4);
+	
+	printf("%d Busqueda?\n", lista_busca(list ,3));
+
 }
