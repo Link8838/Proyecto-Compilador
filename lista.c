@@ -190,14 +190,3 @@ NodoLista* nodo_lista_siguiente(NodoLista* nodo) {
         assert(nodo != NULL);
         return nodo -> siguiente;
 }
-
-int main() {
-	
-	Lista* list = lista_nueva();
-	lista_agrega_inicio(list , 2);
-	lista_agrega_inicio(list , 3);
-	lista_agrega_inicio(list , 4);
-	
-	printf("%d Busqueda?\n", lista_busca(list ,3));
-
-}
