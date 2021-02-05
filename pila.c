@@ -1,29 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista.h"
+#include "pila.h"
 
-struct Stack {
-    int top;
-    int cantidad;
-    void **array;
-};
-
-struct Stack* createStack()
+struct Stack *createStack()
 {
-    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    struct Stack* stack = (struct Stack*)malloc(sizeof(Stack*));
     stack->cantidad = 0;
     stack->top = -1;
     stack->array = malloc(sizeof(*stack->array));
     return stack;
 }
 
-
-int isEmpty(struct Stack* stack)
+int isEmpty(Stack *stack)
 {
     return stack->cantidad == 0;
 }
 
-void push(struct Stack* stack, void *item)
+void push(Stack *stack, void *item)
 {
     stack->array[++stack->top] = item;
     stack->cantidad = ++(stack->cantidad) ;
@@ -31,7 +24,7 @@ void push(struct Stack* stack, void *item)
 }
 
 
-void* pop(struct Stack* stack)
+void* pop(Stack *stack)
 {
     if (isEmpty(stack))
         return NULL;
@@ -39,13 +32,13 @@ void* pop(struct Stack* stack)
     return stack->array[stack->top--];
 }
 
-void* peek(struct Stack* stack)
+void* peek(Stack *stack)
 {
     if (isEmpty(stack))
         return NULL;
     return stack->array[stack->top];
 }
 
-int tamano(struct Stack* stack){
+int tamano(Stack *stack){
   return stack->cantidad;
 }

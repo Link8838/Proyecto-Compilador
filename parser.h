@@ -10,13 +10,8 @@
 #include "lista.h"
 
 
-
 /* Dirección disponible en la TT */
 int dir;
-/* Tabla de símbolos */
-Lista *tablaSimbolos;
-/* Tabla de tipos */
-Lista *tablaTipos;
 
 /**
  * Función para paso de prueba y empate del (Programa)

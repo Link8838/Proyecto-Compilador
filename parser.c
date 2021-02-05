@@ -8,6 +8,7 @@
 
 #include "parser.h"
 #include "tokens.h"
+#include "pila.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -17,6 +18,15 @@
 extern token *yylex();
 extern int yylineno;
 token *tA;
+
+/* Tabla de símbolos */
+Lista *tablaSimbolos;
+/* Tabla de tipos */
+Lista *tablaTipos;
+
+Stack *piladeTipos;
+
+Stack *piladeSimbolos;
 
 int eat(int clase){
   int f = 0;
@@ -29,10 +39,23 @@ int eat(int clase){
 
 void parse(token *tk) {
   tA = tk;
+  piladeTipos = createStack();
+
+  piladeSimbolos = createStack();
+  /* Tabla de símbolos */
+  tablaSimbolos = lista_nueva();
+  /* Tabla de tipos */
+  tablaTipos = lista_nueva();
+
   Programa();
+
 }
 
 void Programa(){
+
+  push(piladeTipos,tablaTipos);
+  push(piladeSimbolos,tablaSimbolos);
+  dir = 0;
   Declaraciones();
   //printf("**VAMONOS**%s\n");
   Funciones();
@@ -69,7 +92,7 @@ void Lista_Var(){
   }
 }
 
-void Basico(){
+int Basico(){
   if (eat(INT)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
