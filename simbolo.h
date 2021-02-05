@@ -1,6 +1,5 @@
 #include "lista.h"
 
-
 /**
  * Estructura para modelar símbolos de la TS
  */

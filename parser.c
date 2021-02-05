@@ -25,9 +25,7 @@ token *tA;
 Lista *tablaSimbolos;
 /* Tabla de tipos */
 Lista *tablaTipos;
-
 Stack *piladeTipos;
-
 Stack *piladeSimbolos;
 
 int eat(int clase){
@@ -35,46 +33,45 @@ int eat(int clase){
   if (equals(tA, clase)) {
     f = 1;
   }
-  //printf("\nEAT: %i\n",f);
   return f;
 }
 
-void parse(token *tk) {
+void parse(token *tk) {  
   tA = tk;
-  tipo tipoV = crea_entrada_tipo(0,"VOID",4,-1,-1);
-  tipo tipoI = crea_entrada_tipo(1,"INT",4,-1,-1);
-  tipo tipoD = crea_entrada_tipo(2,"DOUBLE",8,-1,-1);
-  tipo tipoF = crea_entrada_tipo(3,"FLOAT",4,-1,-1);
-  tipo tipoC = crea_entrada_tipo(4,"CHAR",1,-1,-1);
-  piladeTipos = createStack();
-  piladeSimbolos = createStack();
-  tablaSimbolos = lista_nueva();
+  tipo *tipoV = crea_entrada_tipo(0,"VOID",4,-1,-1);  
+  tipo *tipoI = crea_entrada_tipo(1,"INT",4,-1,-1);
+  tipo *tipoD = crea_entrada_tipo(2,"DOUBLE",8,-1,-1);
+  tipo *tipoF = crea_entrada_tipo(3,"FLOAT",4,-1,-1);
+  tipo *tipoC = crea_entrada_tipo(4,"CHAR",1,-1,-1);
+  //printf("Aguacate %s\n", tipoV -> tipo);
+  //piladeTipos = createStack();
+  //piladeSimbolos = createStack();
+  //tablaSimbolos = lista_nueva();
   tablaTipos = lista_nueva();
+  //printf("AAA YA NO SE!!! %i\n", tablaTipos -> longitud);
 
-  lista_agrega_inicio(tablaTipos, tipoC);
-  lista_agrega_inicio(tablaTipos, tipoF);
-  lista_agrega_inicio(tablaTipos, tipoD);
-  lista_agrega_inicio(tablaTipos, tipoI);
-  lista_agrega_inicio(tablaTipos, tipoV);
-
+//Esta linea de abajo es la que rompe todo//
+/////lista_agrega_inicio(tablaTipos, tipoC);///
+  //lista_agrega_inicio(tablaTipos, tipoF);
+  //lista_agrega_inicio(tablaTipos, tipoD);
+  //lista_agrega_inicio(tablaTipos, tipoI);  
+  //lista_agrega_inicio(tablaTipos, tipoV);
+  
   Programa();
 
 }
 
 void Programa(){
-
-  push(piladeTipos,tablaTipos);
-  push(piladeSimbolos,tablaSimbolos);
+  //push(piladeTipos,tablaTipos);
+  //push(piladeSimbolos,tablaSimbolos);
   dir = 0;
-  Declaraciones();
-  //printf("**VAMONOS**%s\n");
+  Declaraciones();  
   Funciones();
 }
 
 void Declaraciones(){
   //printf("Aguacate %s\n",tA -> valor);
-  if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){
-    //printf("**DECLARACIONES**%s\n");
+  if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){    
     Tipo();
     Lista_Var();
     if (eat(PCOMA)) {
@@ -88,6 +85,7 @@ void Declaraciones(){
 }
 
 void Tipo(){
+//  printf("\n**PROGRAMA**\n");
   Basico();
   Compuesto();
 }
@@ -102,9 +100,9 @@ void Lista_Var(){
   }
 }
 
-int Basico(){
+void Basico(){
   if (eat(INT)) {
-    //printf("%s\n",tA -> valor);
+    printf("INT: %s\n",tA -> valor);
     tA = yylex();
   } else if (eat(FLOAT)) {
     //printf("%s\n",tA -> valor);

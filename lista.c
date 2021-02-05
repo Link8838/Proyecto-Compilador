@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "lista.h"
 
 struct _Lista {
@@ -49,16 +50,16 @@ int lista_longitud(Lista* lista) {
 }
 
 void lista_agrega_inicio(Lista* lista, void*  elemento) {
-        assert(lista != NULL && elemento != NULL);
-        NodoLista* nodo = nodo_lista_nuevo(elemento);
+        assert(elemento != NULL);        
+        NodoLista* nodo = nodo_lista_nuevo(elemento);        
         lista -> longitud++;
-        if (lista -> cabeza == NULL) {
+        if (lista -> longitud == 0) {
                 lista -> cabeza = lista -> rabo = nodo;
         } else {
                 (lista -> cabeza) -> anterior = nodo;
                 nodo -> siguiente = lista -> cabeza;
                 lista -> cabeza = nodo;
-        }
+        }        
 }
 
 void lista_agrega_final(Lista* lista, void*  elemento) {

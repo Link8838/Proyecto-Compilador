@@ -1,15 +1,17 @@
 #include "tipo.h"
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 tipo *crea_entrada_tipo(int id, char *tipo, int tam, int elem, int tipoBase) {
-  tipo *t_out = malloc(sizeof(tipo));
-  t_out -> id = id;
-  t_out -> tipo = malloc(sizeof(char));
-  strcpy(t_out -> tipo, tipo);
-  t_out -> tam = tam;
-  t_out -> elem = elem;
-  t_out -> tipoBase;
-  return t_out;
+    struct tipo *tipo_out;
+    tipo_out = malloc(sizeof(struct tipo));   
+     
+    tipo_out -> id = id;
+    tipo_out -> tipo = malloc(sizeof(char));
+    strcpy(tipo_out -> tipo, tipo);
+    tipo_out -> tam = tam;
+    tipo_out -> elem = elem;
+    tipo_out -> tipoBase;
+    return tipo_out;
 }
