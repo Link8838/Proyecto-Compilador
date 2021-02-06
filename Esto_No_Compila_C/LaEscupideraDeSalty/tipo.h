@@ -13,18 +13,18 @@ struct Tipo {
     Tipo();
 
     Tipo(int id, string tipo, int tam, int elem, int tipoBase){
-		this.id -> id;
-		this.tipo -> tipo;
-		this.tam -> tam;
-		this.elem -> elem;
-		this.tipoBase -> tipoBase;
+		this -> id = id;
+		this -> tipo = tipo;
+		this -> tam = tam;
+		this -> elem = elem;
+		this -> tipoBase = tipoBase;
     }
 
     /**
-    * Inicialización de tokens.
+    * Inicialización de tipo.
     */
-    Tipo crea_token(int clase, string valor, int tipo){
-      return new Token(clase, valor, tipo);
+    Tipo crea_tipo(int id, string tipo, int tam, int elem, int tipoBase){
+      return Tipo(id, tipo, tam, elem, tipoBase);
     }
 
 };
