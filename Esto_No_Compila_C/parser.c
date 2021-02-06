@@ -72,7 +72,7 @@ void Programa(){
 void Declaraciones(){
   //printf("Aguacate %s\n",tA -> valor);
   if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){    
-    Tipo();
+    Tipo();    
     Lista_Var();
     if (eat(PCOMA)) {
       //printf("Aguacate %s\n",tA -> valor);
@@ -86,7 +86,8 @@ void Declaraciones(){
 
 void Tipo(){
 //  printf("\n**PROGRAMA**\n");
-  Basico();
+  int compuestoTipo = Basico();
+  printf("Aguacate %i\n", compuestoTipo);
   Compuesto();
 }
 
@@ -100,25 +101,32 @@ void Lista_Var(){
   }
 }
 
-void Basico(){
+int Basico(){
+  int basicoTipo = -1;
   if (eat(INT)) {
-    printf("INT: %s\n",tA -> valor);
+    //printf("INT: %s\n",tA -> valor);
+    basicoTipo = 1;    
     tA = yylex();
   } else if (eat(FLOAT)) {
     //printf("%s\n",tA -> valor);
+    basicoTipo = 3;    
     tA = yylex();
   } else if (eat(CHAR)) {
     //printf("%s\n",tA -> valor);
+    basicoTipo = 4;    
     tA = yylex();
   } else if (eat(DOUBLE)) {
     //printf("%s\n",tA -> valor);
+    basicoTipo = 2;    
     tA = yylex();
   } else if (eat(VOID)) {
     //printf("%s\n",tA -> valor);
+    basicoTipo = 0;    
     tA = yylex();
   } else {
     error();
   }
+  return basicoTipo;
 }
 
 void Compuesto(){
@@ -138,6 +146,8 @@ void Compuesto(){
     }else {
       error();
     }
+  } else {
+
   }
 }
 

@@ -36,7 +36,7 @@ void Lista_Var();
 /**
  * Función para prueba y empate del (Basico)
  */
-void Basico();
+int Basico();
 
 /**
  * Función para prueba y empate del No-terminal (Compuesto)
