@@ -8,26 +8,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "parser.h"
 #include "tokens.h"
-
-
+#include <cstdlib>
+#include <string>
+using namespace std;
 extern FILE *yyin;
-extern token *yylex();
-token *tokenActual;
+extern Token *yylex();
+struct Token *tokenActual;
 
-int main(int argc, char **argv) {
-  if(argc < 2) {
-    puts("Falta archivo de entrada.");
-    exit(1);
-  }
-  printf("Archivo de entrada: ");
-  puts(argv[1]);
-  FILE *fin = fopen(argv[1], "r");
-  yyin = fin;
 
-  puts("Comenzando analisis...");
-  tokenActual = yylex();
-  //puts(tokenActual -> valor);
-  parse(tokenActual);
+int main(int argc, char** argv) {
+    FILE *input;
+    input = fopen(argv[1],"r");
+    yyin = input;
+
+
+
+    puts("Comenzando analisis...");
+    tokenActual = yylex();
+    printf("%d\n",(tokenActual->clase == FUNC));
+    printf("Clase %d\n",tokenActual -> clase);
+    //parse(tokenActual);
+    return 0;
 }

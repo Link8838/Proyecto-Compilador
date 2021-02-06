@@ -1,4 +1,4 @@
-CXX=gcc
+CXX=g++
 BIN=recursive_parser
 INC=headers
 
@@ -7,7 +7,7 @@ OBJ=$(SRC:%.c=%.c)
 
 all: flex fin
 
-fin: lex.yy.c parser.c main.c tokens.c simbolo.c tipo.c lista.c pila.c
+fin: lex.yy.cpp
 	$(CXX) -I$(INC) -g -o $(BIN) $^ 
 
 %.o: %.c

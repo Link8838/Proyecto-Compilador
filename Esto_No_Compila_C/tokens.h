@@ -6,83 +6,87 @@
  * Quintero Villeda Erik
 */
 
-#define COMA 1001
-#define PCOMA 1002
-#define LLAIZQ 1003
-#define LLADER 1004
-#define INT 1005
-#define FLOAT 1006
-#define NUM 1007
-#define ID 1008
-#define CHAR 1009
-#define DOUBLE 1010
-#define VOID 1011
-#define PIZQ 1012
-#define PDER 1013
-#define FUNC 1014
-#define IF 1015
-#define ELSE 1016
-#define WHILE 1017
-#define DO 1018
-#define SWITCH 1019
-#define BREAK 1020
-#define CASE 1021
-#define DOSPUNTOS 1022
-#define DEFAULT 1023
-#define OR 1024
-#define AND 1025
-#define IGUAL 1026
-#define DIFF 1027
-#define MENOR 1028
-#define MENOREQ 1029
-#define MAYOR 1030
-#define MAYOREQ 1031
-#define MAS 1032
-#define MENOS 1033
-#define MULT 1034
-#define DIV 1035
-#define MOD 1036
-#define NEGA 1037
-#define NEG 1038
-#define STR 1039
-#define TRUE 1040
-#define FALSE 1041
-#define CIZQ 1042
-#define CDER 1043
-#define RETURN 1044
-#define PRINT 1045
-#define SCAN 1046
-#define ASIG 1047
-#define FIN 9001
-
-#include <string.h>
-#include <stdlib.h>
+#ifndef TOKENS_H
+#define TOKENS_H
+#include <string>
+using namespace std;
 
 /**
  * Estructura para modelar tokens (componentes léxicos)
  */
-typedef struct token {
+struct Token {
   int clase; //léxica
-  char *valor; //lexema
+  string valor; //lexema
   int tipo; //para diferenciar entre diferentes lexemas de una misma clase léxica
-} token;
 
-/**
- * Inicialización de tokens sin tipo
- */
- token *crea_token();
+  Token(){}
 
-/**
- * Inicialización de tokens con tipo
- */
- token *crea_token_tipo();
+  Token(int clase, string valor, int tipo){
+    this->clase = clase;
+    this->valor = valor;
+    this->tipo = tipo;
+  }
 
-/**
- * Verificación de token perteneciente a una clase léxica
- */
- int equals();
+    /**
+    * Inicialización de tokens.
+    */
+    Token* crea_token(int clase, string valor, int tipo){
+      return new Token(clase, valor, tipo);
+    }
 
-/**
- * Liberación de memoria de un token
- */
-//void libera(token *t);
+    int equals(Token t1, int clase) {
+      return t1.clase == clase;
+    }
+
+};
+
+const int COMA = 1001;
+const int PCOMA = 1002;
+const int LLAIZQ = 1003;
+const int LLADER = 1004;
+const int INT = 1005;
+const int FLOAT = 1006;
+const int NUM = 1007;
+const int ID = 1008;
+const int CHAR = 1009;
+const int DOUBLE = 1010;
+const int VOID = 1011;
+const int PIZQ = 1012;
+const int PDER = 1013;
+const int FUNC = 1014;
+const int IF = 1015;
+const int ELSE = 1016;
+const int WHILE = 1017;
+const int DO = 1018;
+const int SWITCH = 1019;
+const int BREAK = 1020;
+const int CASE = 1021;
+const int DOSPUNTOS = 1022;
+const int DEFAULT = 1023;
+const int OR = 1024;
+const int AND = 1025;
+const int IGUAL = 1026;
+const int DIFF = 1027;
+const int MENOR = 1028;
+const int MENOREQ = 1029;
+const int MAYOR = 1030;
+const int MAYOREQ = 1031;
+const int MAS = 1032;
+const int MENOS = 1033;
+const int MULT = 1034;
+const int DIV = 1035;
+const int MOD = 1036;
+const int NEGA = 1037;
+const int NEG = 1038;
+const int STR = 1039;
+const int TRUE = 1040;
+const int FALSE = 1041;
+const int CIZQ = 1042;
+const int CDER = 1043;
+const int RETURN = 1044;
+const int PRINT = 1045;
+const int SCAN = 1046;
+const int ASIG = 1047;
+const int FIN = 9001;
+
+#endif
