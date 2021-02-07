@@ -47,6 +47,7 @@ void parse(Token tk) {
   tA = tk;
   construirTablaTipos();
   Programa();
+  printf("\nDIRECCION: %i\n", dir);
 }
 
 void Programa(){
@@ -61,13 +62,13 @@ void Declaraciones(){
   //printf("Aguacate %s\n",tA -> valor);
   if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){//FIRST DE TIPO
     int lista_varTipoH = Tipo();
-    Lista_Var();
+    Lista_Var(lista_varTipoH);
     if (eat(PCOMA)) {
       //printf("Aguacate %s\n",tA -> valor);
       tA = yylex();
       Declaraciones();
     }else{
-      error();
+      errorSintactico();
     }
   }
 }
@@ -80,20 +81,20 @@ int Tipo(){
   return tipoTipo;
 }
 
-void Lista_Var(){
+void Lista_Var(int lista_varTipoH){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);
     if(!buscarIDTS(tA.valor)){
       list<int> arrgs;
-      insertarSimbolo(tA.valor, dir, tA.tipo, 0, arrgs);//QUIZÁ NO ES 0
+      insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
       dir += pilaTablaTipos.top().front().tam;
     } else {
-      errorSintactico("El ID ya fue declarado:");
+      errorSemantico("El ID ya fue declarado:");
     }
     tA = yylex();
-    Lop();
+    Lop(lista_varTipoH);
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -120,7 +121,7 @@ int Basico(){
     basicoTipo = 0;    
     tA = yylex();
   } else {
-    error();
+    errorSintactico();
   }
   return basicoTipo;
 }
@@ -144,10 +145,10 @@ int Compuesto(int base){
           tA = yylex();
           Compuesto(base);
       }else{
-        error();
+        errorSintactico();
       }
     }else {
-      error();
+      errorSintactico();
     }
   } else {
     compuestoTipo = base;
@@ -155,14 +156,21 @@ int Compuesto(int base){
   return compuestoTipo;
 }
 
-void Lop(){
+void Lop(int lista_varTipoH){
   if (eat(COMA)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
       if (eat(ID)) {
           //printf("%s\n",tA -> valor);
+            if(!buscarIDTS(tA.valor)){
+              list<int> arrgs;
+              insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
+              dir += pilaTablaTipos.top().front().tam;
+            } else {
+              errorSemantico("El ID ya fue declarado:");
+            }
           tA = yylex();
-          Lop();
+          Lop(lista_varTipoH);
       }
   }
 }
@@ -171,6 +179,16 @@ void Funciones(){
   //printf("**FUNCIONES!**%s\n");
   if (eat(FUNC)) {
       //printf("%s\n",tA -> valor);
+      //////////////////////////////////////////////
+      //list<Simbolo> nuevaTablaSimb;
+      //list<TipTipe> nuevaTablaTipo;
+      //list
+      //stack<int> pilaDir;
+      //pilaTablaSimbolos.push(nuevaTablaSimb);
+      //pilaTablaTipos.push(nuevaTablaTipo);
+      //pilaDir.push(dir);
+      //dir = 0;
+      //////////////////////////////////////////////
       tA = yylex();
       Tipo();
       if (eat(ID)) {
@@ -185,18 +203,26 @@ void Funciones(){
                   tA = yylex();
                   Bloque();
                   Funciones();
+              } else{
+                errorSintactico();
               }
+          }else{
+            errorSintactico();
           }
+      } else {
+        errorSintactico();
       }
   } else if(eat(FIN)){
     printf("**CADENA ACEPTADA**\n");
   }
 }
 
-void Argumentos(){
-  if (eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)) {
-    Lista_Args();
-  }
+list<int> Argumentos(){
+  list<int> argumentosLista;
+  if (eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)) {//FIRST TIPO    
+    argumentosLista = Lista_Args();
+  } 
+  return argumentosLista;
 }
 
 void Bloque(){
@@ -209,35 +235,59 @@ void Bloque(){
         //printf("%s\n",tA -> valor);
         tA = yylex();
     }else{
-      error();
+      errorSintactico();
     }
   }else{
-    error();
+    errorSintactico();
   }
 }
 
-void Lista_Args(){
-  Tipo();
+list<int> Lista_Args(){
+  int tipoTipo = Tipo();
+  list<int> lista_argsLista;
   if (eat(ID)) {
       //printf("%s\n",tA -> valor);
-      tA = yylex();
-      Lista_ArgsP();
+    if(!buscarIDTS(tA.valor)){
+      list<int> arrgs;
+      insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
+      dir += pilaTablaTipos.top().front().tam;
+    } else {
+      errorSemantico("El ID ya fue declarado:");
+    }
+
+    tA = yylex();
+    list<int> nuevaListaArgs;
+    nuevaListaArgs.push_front(tipoTipo);
+    lista_argsLista = Lista_ArgsP(nuevaListaArgs);
   }else{
-    error();
+    errorSintactico();
   }
+  return lista_argsLista;
 }
 
-void Lista_ArgsP(){
+list<int> Lista_ArgsP(list<int> lista_argsPListaH){
+  list<int> lista_argsPListaS;
   if (eat(COMA)) {
+    //printf("%s\n",tA -> valor);
+    tA = yylex();
+    int tipoTipo = Tipo();
+    if (eat(ID)) {
       //printf("%s\n",tA -> valor);
+      if(!buscarIDTS(tA.valor)){
+        list<int> arrgs;
+        insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
+        dir += pilaTablaTipos.top().front().tam;
+      } else {
+        errorSemantico("El ID ya fue declarado:");
+      }      
       tA = yylex();
-      Tipo();
-      if (eat(ID)) {
-          //printf("%s\n",tA -> valor);
-          tA = yylex();
-          Lista_ArgsP();
-      }
+      lista_argsPListaH.push_front(tipoTipo);
+      lista_argsPListaS = Lista_ArgsP(lista_argsPListaH);
+    }
+  } else{
+    lista_argsPListaS = lista_argsPListaH;
   }
+  return lista_argsPListaS;
 }
 
 void Instrucciones(){
@@ -259,10 +309,10 @@ void Sentencia(){
               Sentencia();
               Sent();
           }else{
-            error();
+            errorSintactico();
           }
       }else{
-        error();
+        errorSintactico();
       }
   } else if (eat(RETURN)) {
       //printf("%s\n",tA -> valor);
@@ -278,10 +328,10 @@ void Sentencia(){
         //printf("%s\n",tA -> valor);
         tA = yylex();
       }else{
-        error();
+        errorSintactico();
       }
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(WHILE)) {
       //printf("%s\n",tA -> valor);
@@ -295,10 +345,10 @@ void Sentencia(){
           tA = yylex();
           Sentencia();
         }else{
-          error();
+          errorSintactico();
         }
       }else{
-        error();
+        errorSintactico();
       }
   } else if (eat(DO)) {
     //printf("%s\n",tA -> valor);
@@ -316,13 +366,13 @@ void Sentencia(){
           tA = yylex();
           Sentencia();
         }else{
-          error();
+          errorSintactico();
         }
       }else{
-        error();
+        errorSintactico();
       }
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(BREAK)) {
     //printf("%s\n",tA -> valor);
@@ -331,7 +381,7 @@ void Sentencia(){
       //printf("%s\n",tA -> valor);
       tA = yylex();
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(LLAIZQ)) {
     Bloque();
@@ -353,16 +403,16 @@ void Sentencia(){
             //printf("%s\n",tA -> valor);
             tA = yylex();
           }else{
-            error();
+            errorSintactico();
           }
         }else{
-          error();
+          errorSintactico();
         }
       }else{
-        error();
+        errorSintactico();
       }
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(PRINT)) {
     //printf("%s\n",tA -> valor);
@@ -372,14 +422,14 @@ void Sentencia(){
         //printf("%s\n",tA -> valor);
         tA = yylex();
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(SCAN)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
       Pierna_Izquierda_Exodia();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -405,13 +455,13 @@ void Ret(){
         //printf("%s\n",tA -> valor);
         tA = yylex();
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(PCOMA)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -421,7 +471,7 @@ void Pierna_Izquierda_Exodia(){
       tA = yylex();
       Ptt();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -456,13 +506,13 @@ void Caso(){
         tA = yylex();
         Instrucciones();
       }else{
-        error();
+        errorSintactico();
       }
     }else{
-      error();
+      errorSintactico();
     }
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -475,10 +525,10 @@ void Predeterminado(){
       tA = yylex();
       Instrucciones();
     }else{
-      error();
+      errorSintactico();
     }
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -498,10 +548,10 @@ void Localization(){
       tA = yylex();
       LocalP();
     }else{
-      error();
+      errorSintactico();
     }
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -594,7 +644,7 @@ void ExP(){
     tA = yylex();
     Term();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -610,7 +660,7 @@ void Unario(){
   } else if (eat(ID) || eat(NUM) || eat(PIZQ) || eat(STR) || eat(TRUE) || eat(FALSE)) {
     Factor();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -633,7 +683,7 @@ void TerP(){
   } else if (eat(MOD)) {
     Unario();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -650,7 +700,7 @@ void Factor(){
       //printf("%s\n",tA -> valor);
       tA = yylex();
     }else{
-      error();
+      errorSintactico();
     }
   } else if (eat(NUM)) {
     //printf("%s\n",tA -> valor);
@@ -665,7 +715,7 @@ void Factor(){
     //printf("%s\n",tA -> valor);
     tA = yylex();
   }else{
-    error();
+    errorSintactico();
   }
 }
 
@@ -680,7 +730,7 @@ void Faacc(){
           //printf("%s\n",tA -> valor);
           tA = yylex();
         }else{
-          error();
+          errorSintactico();
         }
       }
     }
@@ -715,18 +765,18 @@ void LocalP(){
       tA = yylex();
       LocalP();
     }else{
-      error();
+      errorSintactico();
     }
   }
 }
 
-void error() {
-  printf("\n Error :,c \n Token inesperado: %s\n En la linea: %i\n",tA.valor.c_str(), yylineno);
+void errorSintactico() {
+  printf("\n Error Sintantico \n Token inesperado: %s\n En la linea: %i\n",tA.valor.c_str(), yylineno);
   exit(0);
 }
 
-void errorSintactico(string fail){
-  printf("\n Error Sintantico en la linea: %i\n %s %s\n", yylineno, fail.c_str(), tA.valor.c_str());
+void errorSemantico(string fail){
+  printf("\n Error Semantico en la linea: %i\n %s %s\n", yylineno, fail.c_str(), tA.valor.c_str());
   exit(0);
 }
 

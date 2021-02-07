@@ -31,7 +31,7 @@ int Tipo();
 /**
  * Función para prueba y empate del (Lista_Var)
  */
-void Lista_Var();
+void Lista_Var(int lista_varTipoH);
 
 /**
  * Función para prueba y empate del (Basico)
@@ -46,7 +46,7 @@ int Compuesto(int base);
 /**
  * Función para prueba y empate del No-terminal (Lop)
  */
-void Lop();
+void Lop(int lista_varTipoH);
 
 /**
  * Función para prueba y empate del No-terminal (Funciones)
@@ -56,7 +56,7 @@ void Funciones();
 /**
  * Función para prueba y empate del No-terminal (Argumentos)
  */
-void Argumentos();
+list<int> Argumentos();
 
 /**
  * Función para prueba y empate del No-terminal (Bloque)
@@ -66,12 +66,12 @@ void Bloque();
 /**
  * Función para prueba y empate del No-terminal (Lista_Args)
  */
-void Lista_Args();
+list<int> Lista_Args();
 
 /**
  * Función para prueba y empate del No-terminal (Lista_ArgsP)
  */
-void Lista_ArgsP();
+list<int> Lista_ArgsP(list<int> l);
 
 /**
  * Función para prueba y empate del No-terminal (Instrucciones)
@@ -271,11 +271,11 @@ void insertarSimbolo(string id, int dir, int type, int var, list<int> args);
 /**
  * Función para reporte de errores sintácticos y semánticos.
  */
-void error();
+void errorSintactico();
 
 /**
  * Función para reporte de errores sintácticos y semánticos.
  */
-void errorSintactico(string str);
+void errorSemantico(string str);
 
 #endif
