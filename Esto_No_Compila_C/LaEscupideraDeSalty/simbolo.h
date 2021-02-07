@@ -11,7 +11,7 @@ struct Simbolo {
     int var;
     list<int> args;
 
-    Simbolo();
+    Simbolo(){}
 
     Simbolo(string id, int dir, int type, int var, list<int> args){
     	this -> id = id;

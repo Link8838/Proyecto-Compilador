@@ -1,30 +1,31 @@
-#ifndef TIPO_H
-#define TIPO_H
+#ifndef TIPTIPE_H
+#define TIPTIPE_H
 #include <string>
+#include <list>
 using namespace std;
 
-struct Tipo {
+struct TipTipe {
     int id;
     string tipo;
     int tam;
     int elem;
     int tipoBase;
 
-    Tipo();
+    TipTipe(){}
 
-    Tipo(int id, string tipo, int tam, int elem, int tipoBase){
-		this -> id = id;
-		this -> tipo = tipo;
-		this -> tam = tam;
-		this -> elem = elem;
-		this -> tipoBase = tipoBase;
+    TipTipe(int id, string tipo, int tam, int elem, int tipoBase){
+        this -> id = id;
+        this -> tipo = tipo;
+        this -> tam = tam;
+        this -> elem = elem;
+        this -> tipoBase = tipoBase;
     }
 
     /**
     * Inicialización de tipo.
     */
-    Tipo crea_tipo(int id, string tipo, int tam, int elem, int tipoBase){
-      return Tipo(id, tipo, tam, elem, tipoBase);
+    TipTipe crea_tipo(int id, string tipo, int tam, int elem, int tipoBase){
+      return TipTipe(id, tipo, tam, elem, tipoBase);
     }
 
 };

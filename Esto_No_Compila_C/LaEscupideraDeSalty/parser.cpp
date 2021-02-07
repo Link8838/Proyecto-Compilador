@@ -1,4 +1,4 @@
-/**
+  /**
  * Práctica 7: Compiladores
  * Figueroa Sandoval Gerardo Emiliano
  * Hernández Ferreiro Enrique Ehecatl
@@ -6,20 +6,34 @@
  * Quintero Villeda Erik
 */
 
-#include "parser.h"
 #include <stdio.h>
-#include <queue>
-#include <list>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stack>
+#include <list>
 #include <string>
 #include <cstdlib>
+#include <iostream>
+#include "parser.h"
 
 //Programar a parte las funciones auxiliares
 using namespace std;
 extern Token yylex();
 extern int yylineno;
-struct Token tA;
+
+int dir = -1;
+
+Token tA;
+TipTipe tipo;
+Simbolo simb;
+
+list<TipTipe> tablaTipos;
+list<Simbolo> tablaSimbolos;
+stack<list<TipTipe>> pilaTablaTipos;
+stack<list<Simbolo>> pilaTablaSimbolos;
+
+
 
 int eat(int clase){
   int f = 0;
@@ -31,20 +45,22 @@ int eat(int clase){
 
 void parse(Token tk) {
   tA = tk;
+  construirTablaTipos();
   Programa();
 }
 
 void Programa(){
-  //push(piladeTipos,tablaTipos);
-  //push(piladeSimbolos,tablaSimbolos);
+  pilaTablaTipos.push(tablaTipos);
+  pilaTablaSimbolos.push(tablaSimbolos);
+  dir = 0;
   Declaraciones();  
   Funciones();
 }
 
 void Declaraciones(){
   //printf("Aguacate %s\n",tA -> valor);
-  if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){    
-    Tipo();    
+  if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){//FIRST DE TIPO
+    int lista_varTipoH = Tipo();
     Lista_Var();
     if (eat(PCOMA)) {
       //printf("Aguacate %s\n",tA -> valor);
@@ -56,16 +72,24 @@ void Declaraciones(){
   }
 }
 
-void Tipo(){
+int Tipo(){
 //  printf("\n**PROGRAMA**\n");
-  Basico();
+  int compuestoBase = Basico();
   //printf("Aguacate %i\n", compuestoTipo);
-  Compuesto();
+  int tipoTipo = Compuesto(compuestoBase);
+  return tipoTipo;
 }
 
 void Lista_Var(){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);
+    if(!buscarIDTS(tA.valor)){
+      list<int> arrgs;
+      insertarSimbolo(tA.valor, dir, tA.tipo, 0, arrgs);//QUIZÁ NO ES 0
+      dir += pilaTablaTipos.top().front().tam;
+    } else {
+      errorSintactico("El ID ya fue declarado:");
+    }
     tA = yylex();
     Lop();
   }else{
@@ -73,7 +97,7 @@ void Lista_Var(){
   }
 }
 
-void Basico(){
+int Basico(){
   int basicoTipo = -1;
   if (eat(INT)) {
     //printf("INT: %s\n",tA -> valor);
@@ -98,19 +122,27 @@ void Basico(){
   } else {
     error();
   }
+  return basicoTipo;
 }
 
-void Compuesto(){
+int Compuesto(int base){
+  int compuestoTipo = -1;
+  int tamArr, tipeArr;
   if (eat(CIZQ)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
       if (eat(NUM)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
+        tamArr = atoi(tA.valor.c_str());
+        tipeArr = tA.tipo;
         if (eat(CDER)) {
           //printf("%s\n",tA -> valor);
+          TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,tipeArr);
+          insertarTipoTop(array);
+          compuestoTipo = tipeArr;//COSAS RARAS        
           tA = yylex();
-          Compuesto();
+          Compuesto(base);
       }else{
         error();
       }
@@ -118,8 +150,9 @@ void Compuesto(){
       error();
     }
   } else {
-
+    compuestoTipo = base;
   }
+  return compuestoTipo;
 }
 
 void Lop(){
@@ -690,6 +723,48 @@ void LocalP(){
 void error() {
   printf("\n Error :,c \n Token inesperado: %s\n En la linea: %i\n",tA.valor.c_str(), yylineno);
   exit(0);
+}
+
+void errorSintactico(string fail){
+  printf("\n Error Sintantico en la linea: %i\n %s %s\n", yylineno, fail.c_str(), tA.valor.c_str());
+  exit(0);
+}
+
+void construirTablaTipos(){
+  struct TipTipe tipoV = tipoV.crea_tipo(0,"VOID",4,-1,-1);
+  struct TipTipe tipoI = tipoV.crea_tipo(1,"INT",4,-1,-1);
+  struct TipTipe tipoD = tipoV.crea_tipo(2,"DOUBLE",8,-1,-1);
+  struct TipTipe tipoF = tipoV.crea_tipo(3,"FLOAT",4,-1,-1);
+  struct TipTipe tipoC = tipoV.crea_tipo(4,"CHAR",4,-1,-1);
+  tablaTipos.push_front(tipoV);
+  tablaTipos.push_front(tipoI);
+  tablaTipos.push_front(tipoD);
+  tablaTipos.push_front(tipoF);
+  tablaTipos.push_front(tipoC);
+  //printf("A ver si jala: %s\n", tipoV.tipo.c_str());
+}
+
+void construirTablaSimbolos(){
+
+}
+
+int buscarIDTS(string id){
+  int busca = 0;
+  for(Simbolo s : pilaTablaSimbolos.top()){
+    if(strcmp(s.id.c_str(), id.c_str()) == 0){
+      busca = 1;      
+    }    
+  }
+  return busca;
+}
+
+void insertarTipoTop(TipTipe tipooo){  
+  pilaTablaTipos.top().push_front(tipooo);
+}
+
+void insertarSimbolo(string id, int dir, int type, int var, list<int> args){
+  Simbolo simb = Simbolo(id, dir, type, var, args);
+  pilaTablaSimbolos.top().push_front(simb);
 }
 
 //int main(){return 0;}

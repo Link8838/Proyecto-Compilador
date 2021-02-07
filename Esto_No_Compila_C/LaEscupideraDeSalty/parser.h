@@ -10,6 +10,8 @@
 #define PARSER_SEM_H
 
 #include "tokens.h"
+#include "tipo.h"
+#include "simbolo.h"
 
 /**
  * Función para paso de prueba y empate del (Programa)
@@ -24,7 +26,7 @@ void Declaraciones();
 /**
  * Función para prueba y empate del (Tipo)
  */
-void Tipo();
+int Tipo();
 
 /**
  * Función para prueba y empate del (Lista_Var)
@@ -34,12 +36,12 @@ void Lista_Var();
 /**
  * Función para prueba y empate del (Basico)
  */
-void Basico();
+int Basico();
 
 /**
  * Función para prueba y empate del No-terminal (Compuesto)
  */
-void Compuesto();
+int Compuesto(int base);
 
 /**
  * Función para prueba y empate del No-terminal (Lop)
@@ -244,8 +246,36 @@ int eat(int clase);
 void parse(Token t);
 
 /**
+ * Función que inicializa la tabla de tipos.
+ */
+void construirTablaTipos();
+
+/**
+ * Función que inicializa la tabla de simbolos.
+ */
+void construirTablaSimbolos();
+
+/**
+ * Función que 
+ */
+int buscarIDTS(string str);
+/**
+ * Función que 
+ */
+void insertarTipoTop(TipTipe tipooo);
+/**
+ * Función que 
+ */
+void insertarSimbolo(string id, int dir, int type, int var, list<int> args);
+
+/**
  * Función para reporte de errores sintácticos y semánticos.
  */
 void error();
+
+/**
+ * Función para reporte de errores sintácticos y semánticos.
+ */
+void errorSintactico(string str);
 
 #endif
