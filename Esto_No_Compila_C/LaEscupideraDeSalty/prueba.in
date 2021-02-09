@@ -2,9 +2,11 @@ func int suma(int a, int b) {
     int x;
     int y;
     int z;
+    int[3] re;
     while(true) {
         x = a * b;
         y = -a;
         z = 23 && false;
     }
+    return re[aguacate];
 }

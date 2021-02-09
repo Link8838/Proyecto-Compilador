@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stack>
-#include <list>
 #include <string>
 #include <cstdlib>
 #include <iostream>
@@ -501,6 +499,7 @@ void Pierna_Izquierda_Exodia(){
     //printf("%s\n",tA -> valor);
     string idLexVal = tA.valor;
     auxlinea = yylineno;
+    auxID = tA.valor;
     tA = yylex();
     Ptt(idLexVal);
   }else{
@@ -511,7 +510,7 @@ void Pierna_Izquierda_Exodia(){
 int Bool(){
   Comb();
   BoolP();
-  return 0;/////////////////ARREGLAR BOOL!
+  return 1;/////////////////ARREGLAR BOOL!
 }
 
 void Casos(){
@@ -615,7 +614,7 @@ vector<string> Localization(string localizationBase){
             errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
           }
         } else {
-         errorSemantico("El indice del arreglo debe ser entero: ", auxlinea, auxID);
+         errorSemantico("El indice del arregloo debe ser entero: ", auxlinea, auxID);
         }
       } else {
         errorSemantico("El id no está declarado: ", auxlinea, auxID);
@@ -766,6 +765,7 @@ void Factor(){
     //printf("%s\n",tA -> valor);
     string idLexVal = tA.valor;
     auxlinea = yylineno;
+    auxID = tA.valor;
     tA = yylex();    
     Faacc(idLexVal);
   }else if (eat(PIZQ)) {
@@ -795,21 +795,33 @@ void Factor(){
   }
 }
 
-void Faacc(string idLexVal){
+void Faacc(string faaccBase){
   if (eat(CIZQ)) {
-    Localization(idLexVal);
-  }else if (eat(PIZQ)) {
-        //printf("%s\n",tA -> valor);
-        tA = yylex();
-        Parametros();
-        if (eat(PDER)) {
-          //printf("%s\n",tA -> valor);
-          tA = yylex();
-        }else{
-          errorSintactico();
+    vector<string> aux = Localization(faaccBase);
+    string faaccDir = nuevaTemporal();
+    int faaccTipo = atoi(aux.front().c_str());
+    generarCodigo(faaccDir, "=", faaccBase, aux.back());
+  }else if (eat(PIZQ)){
+    //printf("%s\n",tA -> valor);
+    tA = yylex();
+    Parametros();
+    if (eat(PDER)) {
+      //printf("%s\n",tA -> valor);
+      if(buscarIDTSFondo(faaccBase)){
+        if(getVarPTSFondo(faaccBase) == 2){
+
+        } else {
+          errorSemantico("El id no es una funcion", auxlinea, auxID);
         }
+      } else {
+        errorSemantico("El id no está declarado: ", auxlinea, auxID);
       }
+      tA = yylex();
+    }else{
+      errorSintactico();
     }
+  }
+}
 
 void Parametros(){
   if (eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)) {
@@ -908,6 +920,18 @@ int buscarIDTS(string id){
   return busca;
 }
 
+int buscarIDTSFondo(string id){
+  int busca = 0;
+  list<Simbolo> aux = fondo(pilaTablaSimbolos);
+  for(Simbolo s : aux){
+    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+    if(strcmp(s.id.c_str(), id.c_str()) == 0){
+      busca = 1;      
+    }    
+  }
+  return busca;
+}
+
 void insertarTipoTop(TipTipe tipooo){  
   pilaTablaTipos.top().push_front(tipooo);
 }
@@ -984,6 +1008,51 @@ int getTamTT(int tipo){
   } else {
     return 1;
   }
+}
+
+list<Simbolo> fondo(stack<list<Simbolo>> ts){
+  stack<list<Simbolo>> duracel = ts;
+  stack<list<Simbolo>> energizee;
+  while(!duracel.empty()){
+    list<Simbolo> aux = duracel.top();
+    energizee.push(aux);
+    duracel.pop();
+  }
+  return energizee.top();
+}
+
+int getVarPTSFondo(string id){
+  int var = -1;
+  list<Simbolo> aux = fondo(pilaTablaSimbolos);
+  for(Simbolo s : aux){
+    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+    if(strcmp(s.id.c_str(), id.c_str()) == 0){
+      var = s.var;
+      break;
+    }    
+  }
+  return var;
+}
+
+list<int> getVarListPTSFondo(string id){
+  list<int> args;
+  list<Simbolo> aux = fondo(pilaTablaSimbolos);
+  for(Simbolo s : aux){
+    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+    if(strcmp(s.id.c_str(), id.c_str()) == 0){
+      args = s.args;
+      break;
+    }    
+  }
+  return args;
+}
+
+int equivalenteListas(list<int> uno, list<int> dos){
+  int compare = 0;
+  if(uno.size() == dos.size()){
+
+  }
+  return compare;
 }
 
 //int main(){return 0;}

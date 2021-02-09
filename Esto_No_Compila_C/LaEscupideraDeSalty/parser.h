@@ -13,6 +13,8 @@
 #include "tipo.h"
 #include "simbolo.h"
 #include <vector>
+#include <stack>
+#include <list>
 
 
 /**
@@ -261,6 +263,12 @@ void construirTablaSimbolos();
  * Función que 
  */
 int buscarIDTS(string str);
+
+/**
+ *
+ */
+int buscarIDTSFondo(string id);
+
 /**
  * Función que 
  */
@@ -308,5 +316,12 @@ int getNombre(int tipoTemp, string strTipo);
 
 int getTamTT(int tipo);
 
+list<Simbolo> fondo(stack<list<Simbolo>> ts);
+
+int getVarPTSFondo(string id);
+
+list<int> getVarListPTSFondo(string id);
+
+int equivalenteListas(list<int> uno, list<int> dos);
 
 #endif
