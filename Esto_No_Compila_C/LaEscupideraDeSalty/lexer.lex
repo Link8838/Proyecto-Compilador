@@ -77,7 +77,7 @@ str \"(\\.|[^"\\])*\"|\'(\\.|[^'\\])*\'
 {str} { ECHO; return token.crea_token(STR, yytext,-1); }
 {whitespace} { ECHO; }
 
-<<EOF>> { puts("Fin de analisis lexico."); return token.crea_token(FIN, "",-1); }
+<<EOF>> { puts("\nFin de analisis lexico."); return token.crea_token(FIN, "",-1); }
 . { printf("Error léxico en la linea: %i\n", yylineno); exit(1); }
 
 %%

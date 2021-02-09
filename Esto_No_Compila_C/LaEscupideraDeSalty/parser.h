@@ -12,6 +12,8 @@
 #include "tokens.h"
 #include "tipo.h"
 #include "simbolo.h"
+#include <vector>
+
 
 /**
  * Función para paso de prueba y empate del (Programa)
@@ -106,7 +108,7 @@ void Pierna_Izquierda_Exodia();
 /**
  * Función para prueba y empate del No-terminal (Bool)
  */
-void Bool();
+int Bool();
 
 /**
  * Función para prueba y empate del No-terminal (Casos)
@@ -131,12 +133,12 @@ void Predeterminado();
 /**
  * Función para prueba y empate del No-terminal (Ptt)
  */
-void Ptt();
+vector<string> Ptt(string pttBase);
 
 /**
  * Función para prueba y empate del No-terminal (Localization)
  */
-void Localization();
+vector<string> Localization(string localizationBase);
 
 /**
  * Función para prueba y empate del No-terminal (Comb)
@@ -211,7 +213,7 @@ void Factor();
 /**
  * Función para prueba y empate del No-terminal (Faacc)
  */
-void Faacc();
+void Faacc(string id);
 
 /**
  * Función para prueba y empate del No-terminal (Parametros)
@@ -231,7 +233,7 @@ void ListP();
 /**
  * Función para prueba y empate del No-terminal (LocalP)
  */
-void LocalP();
+int LocalP(string localPBase, int tipo);
 
 /**
  * Función para consumo de componente léxico actual al hacer empate
@@ -276,6 +278,35 @@ void errorSintactico();
 /**
  * Función para reporte de errores sintácticos y semánticos.
  */
-void errorSemantico(string str);
+void errorSemantico(string fail, int linea, string error);
+
+/**
+ * Función que determina si los tipos de la lista son iguales al tipo.
+ */
+int equivalentesLista(int tipo);
+
+/**
+ * Función que genera código.
+ */
+void generarCodigo(string opcion, string arg1,  string arg2, string res);
+
+/**
+ * Función que genera una nueva etiqueta.
+ */
+string nuevaEtiqueta();
+
+/**
+ * Función que genera un nuevo indice.
+ */
+string nuevoIndice();
+
+string nuevaTemporal();
+
+int getTipoTS(string id);
+
+int getNombre(int tipoTemp, string strTipo);
+
+int getTamTT(int tipo);
+
 
 #endif

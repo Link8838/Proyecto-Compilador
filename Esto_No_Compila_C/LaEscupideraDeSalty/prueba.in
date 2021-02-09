@@ -1,13 +1,10 @@
-func int suma(int a, int b, void z) {
+func int suma(int a, int b) {
+    int x;
+    int y;
+    int z;
     while(true) {
         x = a * b;
         y = -a;
         z = 23 && false;
-    }
-
-    if (x >= y || z < x) {
-        scan toroki [true]
-    } else {
-        return !p;
     }
 }

@@ -22,7 +22,13 @@ using namespace std;
 extern Token yylex();
 extern int yylineno;
 
+int auxlinea = 0;
+string auxID = "";
+
 int dir = -1;
+int iE = 0;
+int iI = 0;
+int iT = 0;
 
 Token tA;
 TipTipe tipo;
@@ -30,8 +36,12 @@ Simbolo simb;
 
 list<TipTipe> tablaTipos;
 list<Simbolo> tablaSimbolos;
+list<int> listaRetorno;
+
 stack<list<TipTipe>> pilaTablaTipos;
 stack<list<Simbolo>> pilaTablaSimbolos;
+
+list<vector<string>> codigo;
 
 
 
@@ -47,7 +57,7 @@ void parse(Token tk) {
   tA = tk;
   construirTablaTipos();
   Programa();
-  printf("\nDIRECCION: %i\n", dir);
+  //printf("\nDIRECCION: %i\n", dir);
 }
 
 void Programa(){
@@ -84,12 +94,13 @@ int Tipo(){
 void Lista_Var(int lista_varTipoH){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);
-    if(!buscarIDTS(tA.valor)){
+    int linea = yylineno;
+    if(!buscarIDTS(tA.valor)){      
       list<int> arrgs;
       insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
       dir += pilaTablaTipos.top().front().tam;
     } else {
-      errorSemantico("El ID ya fue declarado:");
+      errorSemantico("El ID ya fue declarado:", linea, tA.valor);
     }
     tA = yylex();
     Lop(lista_varTipoH);
@@ -162,12 +173,13 @@ void Lop(int lista_varTipoH){
       tA = yylex();
       if (eat(ID)) {
           //printf("%s\n",tA -> valor);
+            int linea = yylineno;
             if(!buscarIDTS(tA.valor)){
               list<int> arrgs;
               insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
               dir += pilaTablaTipos.top().front().tam;
             } else {
-              errorSemantico("El ID ya fue declarado:");
+              errorSemantico("El ID ya fue declarado:", linea, tA.valor);
             }
           tA = yylex();
           Lop(lista_varTipoH);
@@ -178,31 +190,48 @@ void Lop(int lista_varTipoH){
 void Funciones(){
   //printf("**FUNCIONES!**%s\n");
   if (eat(FUNC)) {
-      //printf("%s\n",tA -> valor);
-      //////////////////////////////////////////////
-      //list<Simbolo> nuevaTablaSimb;
-      //list<TipTipe> nuevaTablaTipo;
-      //list
-      //stack<int> pilaDir;
-      //pilaTablaSimbolos.push(nuevaTablaSimb);
-      //pilaTablaTipos.push(nuevaTablaTipo);
-      //pilaDir.push(dir);
-      //dir = 0;
-      //////////////////////////////////////////////
+      //printf("%s\n",tA -> valor);      
+      list<Simbolo> nuevaTablaSimb;
+      list<TipTipe> nuevaTablaTipo;
+      list<int> nuevaListaRetorno;
+      listaRetorno = nuevaListaRetorno;
+      stack<int> pilaDir;
+      pilaTablaSimbolos.push(nuevaTablaSimb);
+      pilaTablaTipos.push(nuevaTablaTipo);
+      pilaDir.push(dir);
+      dir = 0;      
       tA = yylex();
-      Tipo();
+      int tipoTipo = Tipo();
+      int linea;
+      //printf("FUNCIONES TIPO: %i\n", tipoTipo);
       if (eat(ID)) {
           //printf("%s\n",tA -> valor);
+          string idAux = tA.valor;
+          linea = yylineno;
           tA = yylex();
           if (eat(PIZQ)) {
               //printf("%s\n",tA -> valor);
               tA = yylex();
-              Argumentos();
+              list<int> argumentosLista = Argumentos();
               if (eat(PDER)) {
                   //printf("%s\n",tA -> valor);
                   tA = yylex();
                   Bloque();
-                  Funciones();
+                  pilaTablaSimbolos.pop();
+                  pilaTablaTipos.pop();  
+//                  listaRetorno.push_front(0);
+                  if(!buscarIDTS(idAux)){
+                    //printf("BUSCAR ID FUNC\n");
+                    if(equivalentesLista(tipoTipo)){
+                      insertarSimbolo(idAux, dir, tipoTipo, 2, argumentosLista);//QUIZÁ NO ES 0
+                      generarCodigo(nuevaEtiqueta(), idAux, "", nuevoIndice());
+                    } else {
+                      errorSemantico("Los tipos de retorno no coinciden:", linea, idAux);
+                    }
+                  } else {
+                    errorSemantico("El ID ya fue declarado:", linea, idAux);
+                  }
+                  Funciones();                  
               } else{
                 errorSintactico();
               }
@@ -247,12 +276,13 @@ list<int> Lista_Args(){
   list<int> lista_argsLista;
   if (eat(ID)) {
       //printf("%s\n",tA -> valor);
+    int linea = yylineno;
     if(!buscarIDTS(tA.valor)){
       list<int> arrgs;
       insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
       dir += pilaTablaTipos.top().front().tam;
     } else {
-      errorSemantico("El ID ya fue declarado:");
+      errorSemantico("El ID ya fue declarado:", linea, tA.valor);
     }
 
     tA = yylex();
@@ -273,12 +303,13 @@ list<int> Lista_ArgsP(list<int> lista_argsPListaH){
     int tipoTipo = Tipo();
     if (eat(ID)) {
       //printf("%s\n",tA -> valor);
+      int linea = yylineno;
       if(!buscarIDTS(tA.valor)){
         list<int> arrgs;
         insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
         dir += pilaTablaTipos.top().front().tam;
       } else {
-        errorSemantico("El ID ya fue declarado:");
+        errorSemantico("El ID ya fue declarado:", linea, tA.valor);
       }      
       tA = yylex();
       lista_argsPListaH.push_front(tipoTipo);
@@ -467,17 +498,20 @@ void Ret(){
 
 void Pierna_Izquierda_Exodia(){
   if (eat(ID)) {
-      //printf("%s\n",tA -> valor);
-      tA = yylex();
-      Ptt();
+    //printf("%s\n",tA -> valor);
+    string idLexVal = tA.valor;
+    auxlinea = yylineno;
+    tA = yylex();
+    Ptt(idLexVal);
   }else{
     errorSintactico();
   }
 }
 
-void Bool(){
+int Bool(){
   Comb();
   BoolP();
+  return 0;/////////////////ARREGLAR BOOL!
 }
 
 void Casos(){
@@ -532,27 +566,67 @@ void Predeterminado(){
   }
 }
 
-void Ptt(){
+vector<string> Ptt(string pttBase){
+  vector<string> dirTipoArreglo;
   if (eat(CIZQ)) {
-    Localization();
+    vector<string> aux = Localization(pttBase);
+    int pttTipo = atoi(aux.front().c_str());
+    string pttDir = aux.back();
+    int pttArreglo = 1;
+    dirTipoArreglo.push_back(to_string(pttTipo));
+    dirTipoArreglo.push_back(pttDir);
+    dirTipoArreglo.push_back(to_string(pttArreglo));
+  } else {
+    if(buscarIDTS(pttBase)){
+      int pttTipo = getTipoTS(pttBase);
+      string pttDir = pttBase;
+      int pttArreglo = -1;
+      dirTipoArreglo.push_back(to_string(pttTipo));
+      dirTipoArreglo.push_back(pttDir);
+      dirTipoArreglo.push_back(to_string(pttArreglo));
+    } else{
+      errorSemantico("El id no esta declarado: ", auxlinea, pttBase);
+    }
+
   }
+  return dirTipoArreglo;
 }
 
-void Localization(){
+vector<string> Localization(string localizationBase){
+  vector<string> tipoDir;
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Bool();
+    int boolTipo = Bool();
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      LocalP();
+      tipoDir.push_back(to_string(LocalP(localizationBase, -1)));
+      if(buscarIDTS(localizationBase)){
+        if(boolTipo == 1){//bool.tipo = int
+          int tipoTemp = getTipoTS(localizationBase);
+          if(getNombre(tipoTemp, "ARRAY")){
+            int localPTipo = pilaTablaTipos.top().front().tipoBase;
+            string localPDir = nuevaTemporal();
+            tipoDir.push_back(localPDir.c_str());
+            int localPTam = getTamTT(tipoTemp);
+            generarCodigo(localPDir, "*", to_string(localPTam), localPDir);
+          } else {
+            errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
+          }
+        } else {
+         errorSemantico("El indice del arreglo debe ser entero: ", auxlinea, auxID);
+        }
+      } else {
+        errorSemantico("El id no está declarado: ", auxlinea, auxID);
+      }
     }else{
       errorSintactico();
     }
   }else{
     errorSintactico();
   }
+  return tipoDir;
 }
 
 void Comb(){
@@ -690,8 +764,10 @@ void TerP(){
 void Factor(){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);
-    tA = yylex();
-    Faacc();
+    string idLexVal = tA.valor;
+    auxlinea = yylineno;
+    tA = yylex();    
+    Faacc(idLexVal);
   }else if (eat(PIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
@@ -719,9 +795,9 @@ void Factor(){
   }
 }
 
-void Faacc(){
+void Faacc(string idLexVal){
   if (eat(CIZQ)) {
-    Localization();
+    Localization(idLexVal);
   }else if (eat(PIZQ)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
@@ -755,28 +831,51 @@ void ListP(){
   }
 }
 
-void LocalP(){
+int LocalP(string localPBase, int localPTipo){  
+  string localPDir;
+  int localPTam;
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Bool();
+    int boolTipo = Bool();
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      LocalP();
+      int temp = LocalP(localPBase, localPTipo);
+      if(buscarIDTS(localPBase)){
+        if(boolTipo == 1){//bool.tipo = int
+          int tipoTemp = getTipoTS(localPBase);
+          if(getNombre(tipoTemp, "ARRAY")){
+            localPTipo = pilaTablaTipos.top().front().tipoBase;
+            localPDir = nuevaTemporal();
+            localPTam = getTamTT(tipoTemp);
+            generarCodigo(localPDir, "*", to_string(localPTam), localPDir);
+            localPTipo = temp;
+          } else {
+            errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
+          }
+        } else {
+         errorSemantico("El indice del arreglo debe ser entero: ", auxlinea, auxID);
+        }
+      } else {
+        errorSemantico("El id no está declarado: ", auxlinea, auxID);
+      }
     }else{
       errorSintactico();
     }
   }
+  return localPTipo;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void errorSintactico() {
   printf("\n Error Sintantico \n Token inesperado: %s\n En la linea: %i\n",tA.valor.c_str(), yylineno);
   exit(0);
 }
 
-void errorSemantico(string fail){
-  printf("\n Error Semantico en la linea: %i\n %s %s\n", yylineno, fail.c_str(), tA.valor.c_str());
+void errorSemantico(string fail, int linea, string error){
+  printf("\n Error Semantico en la linea: %i\n %s %s\n", linea, fail.c_str(), error.c_str());
   exit(0);
 }
 
@@ -801,6 +900,7 @@ void construirTablaSimbolos(){
 int buscarIDTS(string id){
   int busca = 0;
   for(Simbolo s : pilaTablaSimbolos.top()){
+    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
       busca = 1;      
     }    
@@ -815,6 +915,75 @@ void insertarTipoTop(TipTipe tipooo){
 void insertarSimbolo(string id, int dir, int type, int var, list<int> args){
   Simbolo simb = Simbolo(id, dir, type, var, args);
   pilaTablaSimbolos.top().push_front(simb);
+  //printf("\nINSERTAR SIMB: %s TAM: %i\n", id.c_str(), pilaTablaSimbolos.top().size());
+}
+
+int equivalentesLista(int tipo){
+  int equi = 1;
+  for(int i : listaRetorno){
+    //printf("\nLISTA RETORNO: %i, %i\n", i, tipo);
+    if(i != tipo){
+      equi = 0;
+    }
+  }
+  //printf("EQUIVALENTES LISTA\n");
+  return equi;
+}
+
+void generarCodigo(string opcion, string arg1,  string arg2, string res){
+  vector<string> lineaCodigo;
+  lineaCodigo.push_back(opcion);
+  lineaCodigo.push_back(arg1);
+  lineaCodigo.push_back(arg2);
+  lineaCodigo.push_back(res);
+  codigo.push_front(lineaCodigo);
+}
+
+string nuevaEtiqueta(){
+  iE++;
+  return "L" + to_string(iE);
+}
+
+string nuevoIndice(){
+  iI++;
+  return "I" + to_string(iI);
+}
+
+string nuevaTemporal(){
+  iT++;
+  return "T" + to_string(iT);
+}
+
+int getTipoTS(string id){
+  int tipo = -1;
+  for(Simbolo s : pilaTablaSimbolos.top()){
+    if(strcmp(s.id.c_str(), id.c_str()) == 0){
+      tipo = s.type;    
+    }
+  }
+  return tipo;
+}
+
+int getNombre(int tipoTemp, string strTipo){
+  int tipo = 0;
+  if(strcmp(pilaTablaTipos.top().front().tipo.c_str(), strTipo.c_str()) == 0){
+    tipo = 1;
+  }
+  return tipo;
+}
+
+int getTamTT(int tipo){
+  if(tipo == 0){
+    return 4;
+  } else if(tipo == 1){
+    return 4;
+  } else if(tipo == 2){
+    return 8;
+  } else if(tipo == 3){
+    return 4;
+  } else {
+    return 1;
+  }
 }
 
 //int main(){return 0;}
