@@ -12,6 +12,7 @@
 #include "tokens.h"
 #include "tipo.h"
 #include "simbolo.h"
+#include "returntipes.h"
 #include <vector>
 #include <stack>
 #include <list>
@@ -105,7 +106,7 @@ void Ret();
 /**
  * Función para prueba y empate del No-terminal (Pierna_Izquierda_Exodia)
  */
-void Pierna_Izquierda_Exodia();
+piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia();
 
 /**
  * Función para prueba y empate del No-terminal (Bool)
@@ -135,12 +136,12 @@ void Predeterminado();
 /**
  * Función para prueba y empate del No-terminal (Ptt)
  */
-vector<string> Ptt(string pttBase);
+pttReturn Ptt(string pttBase);
 
 /**
  * Función para prueba y empate del No-terminal (Localization)
  */
-vector<string> Localization(string localizationBase);
+localizationReturn Localization(string localizationBase);
 
 /**
  * Función para prueba y empate del No-terminal (Comb)
@@ -235,7 +236,7 @@ void ListP();
 /**
  * Función para prueba y empate del No-terminal (LocalP)
  */
-int LocalP(string localPBase, int tipo);
+localPReturn LocalP(string localPBase, int tipo, string direc);
 
 /**
  * Función para consumo de componente léxico actual al hacer empate

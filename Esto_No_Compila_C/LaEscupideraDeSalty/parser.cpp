@@ -92,6 +92,7 @@ int Tipo(){
 void Lista_Var(int lista_varTipoH){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);
+    auxID = tA.valor;
     int linea = yylineno;
     if(!buscarIDTS(tA.valor)){      
       list<int> arrgs;
@@ -240,7 +241,7 @@ void Funciones(){
         errorSintactico();
       }
   } else if(eat(FIN)){
-    printf("**CADENA ACEPTADA**\n");
+    printf(">Fin del analisis Sintantico\n**CADENA ACEPTADA**\n");
   }
 }
 
@@ -494,23 +495,34 @@ void Ret(){
   }
 }
 
-void Pierna_Izquierda_Exodia(){
+piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia(){
+  piernaIzquieraExodiaReturn piE;
   if (eat(ID)) {
-    //printf("%s\n",tA -> valor);
+    //printf("%s\n",tA -> valor);    
     string idLexVal = tA.valor;
     auxlinea = yylineno;
     auxID = tA.valor;
     tA = yylex();
-    Ptt(idLexVal);
+
+    pttReturn aux = Ptt(idLexVal);
+
+    piE.dir = aux.dir;
+    piE.tipo = aux.tipo;
+    piE.id = idLexVal;
+    piE.arreglo = aux.arreglo;
+
   }else{
     errorSintactico();
   }
+  return piE;
 }
 
 int Bool(){
+  boolReturn bul;
+  bul.tipo = 1;
   Comb();
   BoolP();
-  return 1;/////////////////ARREGLAR BOOL!
+  return bul.tipo;/////////////////ARREGLAR BOOL!
 }
 
 void Casos(){
@@ -565,34 +577,28 @@ void Predeterminado(){
   }
 }
 
-vector<string> Ptt(string pttBase){
-  vector<string> dirTipoArreglo;
+pttReturn Ptt(string pttBase){
+  pttReturn ptt;
   if (eat(CIZQ)) {
-    vector<string> aux = Localization(pttBase);
-    int pttTipo = atoi(aux.front().c_str());
-    string pttDir = aux.back();
-    int pttArreglo = 1;
-    dirTipoArreglo.push_back(to_string(pttTipo));
-    dirTipoArreglo.push_back(pttDir);
-    dirTipoArreglo.push_back(to_string(pttArreglo));
+    localizationReturn aux = Localization(pttBase);
+    ptt.tipo = aux.tipo;
+    ptt.dir = aux.dir;
+    ptt.arreglo = 1;
   } else {
     if(buscarIDTS(pttBase)){
-      int pttTipo = getTipoTS(pttBase);
-      string pttDir = pttBase;
-      int pttArreglo = -1;
-      dirTipoArreglo.push_back(to_string(pttTipo));
-      dirTipoArreglo.push_back(pttDir);
-      dirTipoArreglo.push_back(to_string(pttArreglo));
+      ptt.tipo = getTipoTS(pttBase);
+      ptt.dir = pttBase;
+      ptt.arreglo = -1;
     } else{
       errorSemantico("El id no esta declarado: ", auxlinea, pttBase);
     }
 
   }
-  return dirTipoArreglo;
+  return ptt;
 }
 
-vector<string> Localization(string localizationBase){
-  vector<string> tipoDir;
+localizationReturn Localization(string localizationBase){
+  localizationReturn localization;
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
@@ -600,16 +606,17 @@ vector<string> Localization(string localizationBase){
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      tipoDir.push_back(to_string(LocalP(localizationBase, -1)));
+      localPReturn localP = LocalP(localizationBase, -1, "");
       if(buscarIDTS(localizationBase)){
         if(boolTipo == 1){//bool.tipo = int
           int tipoTemp = getTipoTS(localizationBase);
           if(getNombre(tipoTemp, "ARRAY")){
-            int localPTipo = pilaTablaTipos.top().front().tipoBase;
-            string localPDir = nuevaTemporal();
-            tipoDir.push_back(localPDir.c_str());
-            int localPTam = getTamTT(tipoTemp);
-            generarCodigo(localPDir, "*", to_string(localPTam), localPDir);
+            localP.tipo = pilaTablaTipos.top().front().tipoBase;
+            localP.dir = nuevaTemporal();            
+            localP.tam = getTamTT(tipoTemp);
+            generarCodigo(localP.dir, "=", "bool.dir *", to_string(localP.tam));
+            localization.dir = localP.dir;
+            localization.tipo = localP.tipo;
           } else {
             errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
           }
@@ -625,7 +632,7 @@ vector<string> Localization(string localizationBase){
   }else{
     errorSintactico();
   }
-  return tipoDir;
+  return localization;
 }
 
 void Comb(){
@@ -796,20 +803,31 @@ void Factor(){
 }
 
 void Faacc(string faaccBase){
-  if (eat(CIZQ)) {
-    vector<string> aux = Localization(faaccBase);
-    string faaccDir = nuevaTemporal();
-    int faaccTipo = atoi(aux.front().c_str());
-    generarCodigo(faaccDir, "=", faaccBase, aux.back());
+  faaccReturn faacc;
+  if (eat(CIZQ)) {    
+    localizationReturn localization = Localization(faaccBase);
+    faacc.dir = nuevaTemporal();
+    faacc.tipo = localization.tipo;
+    generarCodigo(faacc.dir, "=", faaccBase, localization.dir);
   }else if (eat(PIZQ)){
     //printf("%s\n",tA -> valor);
     tA = yylex();
+    auxlinea = yylineno;
+    list<int> parametrosLista;//////////////////////////////////////////////////////////VALOR DE LA FUNCIÓN PARAMAETROS.
     Parametros();
     if (eat(PDER)) {
       //printf("%s\n",tA -> valor);
       if(buscarIDTSFondo(faaccBase)){
         if(getVarPTSFondo(faaccBase) == 2){
-
+          list<int> args = getVarListPTSFondo(faaccBase);
+          if(equivalenteListas(args, parametrosLista)){
+            vector<string> tipoDir;
+            faacc.tipo = getTipoTS(faaccBase);
+            faacc.dir = nuevaTemporal();
+            generarCodigo(faacc.dir, "= call", faaccBase,to_string(parametrosLista.size()));
+          } else {
+            errorSemantico("El numero o tipo de parametros no coinciden:", auxlinea, auxID);
+          }
         } else {
           errorSemantico("El id no es una funcion", auxlinea, auxID);
         }
@@ -817,9 +835,12 @@ void Faacc(string faaccBase){
         errorSemantico("El id no está declarado: ", auxlinea, auxID);
       }
       tA = yylex();
-    }else{
+    } else {
       errorSintactico();
     }
+  } else {
+    faacc.dir = faaccBase;
+    faacc.tipo = getTipoTS(faaccBase);
   }
 }
 
@@ -843,9 +864,8 @@ void ListP(){
   }
 }
 
-int LocalP(string localPBase, int localPTipo){  
-  string localPDir;
-  int localPTam;
+localPReturn LocalP(string localPBase, int localPTipo, string direc){
+  localPReturn localP;  
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
@@ -853,16 +873,17 @@ int LocalP(string localPBase, int localPTipo){
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      int temp = LocalP(localPBase, localPTipo);
+      localPReturn temp = LocalP(localPBase, localPTipo, direc);
       if(buscarIDTS(localPBase)){
         if(boolTipo == 1){//bool.tipo = int
           int tipoTemp = getTipoTS(localPBase);
           if(getNombre(tipoTemp, "ARRAY")){
-            localPTipo = pilaTablaTipos.top().front().tipoBase;
-            localPDir = nuevaTemporal();
-            localPTam = getTamTT(tipoTemp);
-            generarCodigo(localPDir, "*", to_string(localPTam), localPDir);
-            localPTipo = temp;
+            localP.tipo = pilaTablaTipos.top().front().tipoBase;
+            localP.dir = nuevaTemporal();
+            localP.tam = getTamTT(tipoTemp);
+            generarCodigo(localP.dir, "*", to_string(localP.tam), localP.dir);
+            localP.tipo = temp.tipo;
+            localP.dir = temp.dir;
           } else {
             errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
           }
@@ -876,18 +897,18 @@ int LocalP(string localPBase, int localPTipo){
       errorSintactico();
     }
   }
-  return localPTipo;
+  return localP;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void errorSintactico() {
-  printf("\n Error Sintantico \n Token inesperado: %s\n En la linea: %i\n",tA.valor.c_str(), yylineno);
+  printf("\n\n >Error Sintantico \n >Token inesperado: %s\n >En la linea: %i\n",tA.valor.c_str(), yylineno);
   exit(0);
 }
 
 void errorSemantico(string fail, int linea, string error){
-  printf("\n Error Semantico en la linea: %i\n %s %s\n", linea, fail.c_str(), error.c_str());
+  printf("\n\n >Error Semantico en la linea: %i\n >%s %s\n", linea, fail.c_str(), error.c_str());
   exit(0);
 }
 
@@ -1050,7 +1071,9 @@ list<int> getVarListPTSFondo(string id){
 int equivalenteListas(list<int> uno, list<int> dos){
   int compare = 0;
   if(uno.size() == dos.size()){
-
+    if(uno == dos){
+      compare = 1;
+    }
   }
   return compare;
 }

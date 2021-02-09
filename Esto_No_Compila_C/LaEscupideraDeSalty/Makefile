@@ -7,7 +7,7 @@ OBJ=$(SRC:%.c=%.c)
 
 all: flex fin
 
-fin: tokens.h lex.yy.c main.cpp simbolo.h tipo.h parser.cpp parser.h
+fin: tokens.h lex.yy.c main.cpp simbolo.h tipo.h parser.cpp parser.h returntipes.h
 	$(CXX) -I$(INC) -g -o $(BIN) $^ 
 
 %.o: %.c

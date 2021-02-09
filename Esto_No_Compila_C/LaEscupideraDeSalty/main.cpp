@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 
 
 
-    puts("Comenzando analisis...");
+    puts(">Comenzando analisis...\n");
     tokenActual = yylex();
     parse(tokenActual);
     return 0;

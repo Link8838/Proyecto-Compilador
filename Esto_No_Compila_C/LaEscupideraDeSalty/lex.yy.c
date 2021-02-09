@@ -987,7 +987,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 80 "lexer.lex"
-{ puts("\nFin de analisis lexico."); return token.crea_token(FIN, "",-1); }
+{ puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
