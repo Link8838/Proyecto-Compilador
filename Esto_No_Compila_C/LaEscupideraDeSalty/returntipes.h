@@ -70,6 +70,38 @@ struct igualdadReturn{
     }
 };
 
+struct relReturn{
+    string verdadero;
+    string falso;
+    string dir;
+    int tipo;
+
+    relReturn(){}
+
+    relReturn(string verdadero, string falso, string dir, int tipo){
+        this -> verdadero = verdadero;
+        this -> falso = falso;
+        this -> dir = dir;
+        this -> tipo = tipo;
+    }
+};
+
+struct xpReturn{
+    string verdadero;
+    string falso;
+    string dir;
+    int tipo;
+
+    xpReturn(){}
+
+    xpReturn(string verdadero, string falso, string dir, int tipo){
+        this -> verdadero = verdadero;
+        this -> falso = falso;
+        this -> dir = dir;
+        this -> tipo = tipo;
+    }
+};
+
 struct expReturn{
     string dir;
     int tipo;
@@ -82,13 +114,13 @@ struct expReturn{
     }
 };
 
-struct exxReturn{
+struct exReturn{
     string dir;
     int tipo;
 
-    exxReturn(){}
+    exReturn(){}
 
-    exxReturn(string dir, int tipo){
+    exReturn(string dir, int tipo){
         this -> dir = dir;
         this -> tipo = tipo;
     }
@@ -106,18 +138,6 @@ struct termReturn{
     }
 };
 
-struct terrrReturn{
-    string dir;
-    int tipo;
-
-    terrrReturn(){}
-
-    terrrReturn(string dir, int tipo){
-        this -> dir = dir;
-        this -> tipo = tipo;
-    }
-};
-
 struct terPReturn{
     string dir;
     int tipo;
@@ -125,6 +145,18 @@ struct terPReturn{
     terPReturn(){}
 
     terPReturn(string dir, int tipo){
+        this -> dir = dir;
+        this -> tipo = tipo;
+    }
+};
+
+struct unarioReturn{
+    string dir;
+    int tipo;
+
+    unarioReturn(){}
+
+    unarioReturn(string dir, int tipo){
         this -> dir = dir;
         this -> tipo = tipo;
     }

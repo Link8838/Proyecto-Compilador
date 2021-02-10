@@ -1,8 +1,14 @@
+<*  Esto es un archivo
+    de prueba           *>
+
 func int suma(int a, int b) {
     int x;
     int y;
     int z;
     int[0] re;
+
+    --Esto es un comentario.
+
     while(true) {
         x = a * b;
         y = -a;

@@ -111,7 +111,7 @@ piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia();
 /**
  * Función para prueba y empate del No-terminal (Bool)
  */
-int Bool();
+boolReturn Bool();
 
 /**
  * Función para prueba y empate del No-terminal (Casos)
@@ -121,7 +121,7 @@ void Casos();
 /**
  * Función para prueba y empate del No-terminal (Exp)
  */
-void Exp();
+expReturn Exp();
 
 /**
  * Función para prueba y empate del No-terminal (Caso)
@@ -161,7 +161,7 @@ void Igualdad();
 /**
  * Función para prueba y empate del No-terminal (Rel)
  */
-void Rel();
+relReturn Rel();
 
 /**
  * Función para prueba y empate del No-terminal (IgualdadP)
@@ -176,62 +176,52 @@ void CombP();
 /**
  * Función para prueba y empate del No-terminal (Xp)
  */
-void Xp();
+xpReturn Xp(string v, string f, int tipo);
 
 /**
  * Función para prueba y empate del No-terminal (Term)
  */
-void Term();
-
-/**
- * Función para prueba y empate del No-terminal (Exx)
- */
-void Exx();
+termReturn Term();
 
 /**
  * Función para prueba y empate del No-terminal (ExP)
  */
-void ExP();
+exReturn Ex(int tipe, string dir);
 
 /**
  * Función para prueba y empate del No-terminal (Unario)
  */
-void Unario();
-
-/**
- * Función para prueba y empate del No-terminal (Terrr)
- */
-void Terrr();
+unarioReturn Unario();
 
 /**
  * Función para prueba y empate del No-terminal (TerP)
  */
-void TerP();
+terPReturn TerP(int tipe, string dire);
 
 /**
  * Función para prueba y empate del No-terminal (Factor)
  */
-void Factor();
+factorReturn Factor();
 
 /**
  * Función para prueba y empate del No-terminal (Faacc)
  */
-void Faacc(string id);
+faaccReturn Faacc(string id);
 
 /**
  * Función para prueba y empate del No-terminal (Parametros)
  */
-void Parametros();
+list<int> Parametros();
 
 /**
  * Función para prueba y empate del No-terminal (Lista_Param)
  */
-void Lista_Param();
+list<int> Lista_Param();
 
 /**
  * Función para prueba y empate del No-terminal (ListP)
  */
-void ListP();
+list<int> ListP(list<int> listaH);
 
 /**
  * Función para prueba y empate del No-terminal (LocalP)
@@ -324,5 +314,7 @@ int getVarPTSFondo(string id);
 list<int> getVarListPTSFondo(string id);
 
 int equivalenteListas(list<int> uno, list<int> dos);
+
+int equivalentes(int tipoH, int unarioH);
 
 #endif

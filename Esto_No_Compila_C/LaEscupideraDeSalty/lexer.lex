@@ -24,6 +24,8 @@ num_double [0-9]*"."[0-9]+
 id [a-zA-Z][a-zA-Z0-9]*
 whitespace [ \t\n]
 str \"(\\.|[^"\\])*\"|\'(\\.|[^'\\])*\'
+comeUn "--"[^\n]*
+comeMul "<*"[^"*>"]*"*>"
 
 %%
 
@@ -73,11 +75,13 @@ str \"(\\.|[^"\\])*\"|\'(\\.|[^'\\])*\'
 {num_ent} { ECHO; return token.crea_token(NUM, yytext, 0); }
 {num_float} { ECHO; return token.crea_token(NUM, yytext, 1); }
 {num_double} { ECHO; return token.crea_token(NUM, yytext, 2); }
+{comeUn} { ECHO;}
+{comeMul} { ECHO;}
 {id} { ECHO; return token.crea_token(ID, yytext,-1); }
 {str} { ECHO; return token.crea_token(STR, yytext,-1); }
 {whitespace} { ECHO; }
 
 <<EOF>> { puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
-. { printf("Error léxico en la linea: %i\n", yylineno); exit(1); }
+. { printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
 
 %%
