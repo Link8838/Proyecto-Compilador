@@ -11,18 +11,24 @@ func int suma(int a, int b) {
     int x;
     int y;
     int z;
-    int[0] re;
+    double w;
+    char aa;
+    float f;
+    int[1] re;
     x = 2;
     y = 2;
+    w = 2.0;
+    aa = a;
+    f = 2.0;
 
     --Esto es un comentario.
 
     while(x != y) {
         x = a * b;
         y = -a;
-        z = 23 && false;
+        z = 23;
     }
-    return re[aguacate];
+    return re[1];
 }
 
 

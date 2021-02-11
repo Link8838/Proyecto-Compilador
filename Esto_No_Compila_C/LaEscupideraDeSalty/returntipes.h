@@ -46,6 +46,24 @@ struct boolReturn{
     }
 };
 
+struct boolPReturn{
+    string dir;
+    string verdadero;
+    string falso;
+    int tipo;
+    list<string> listaIndices;
+
+    boolPReturn(){}
+
+    boolPReturn(string dir,string verdadero, string falso, int tipo, list<string> listaIndices){
+        this -> dir = dir;
+        this -> verdadero = verdadero;
+        this -> falso = falso;
+        this -> tipo = tipo;
+        this -> listaIndices = listaIndices;
+    }
+};
+
 struct combReturn{
     string dir;
     int tipo;

@@ -146,12 +146,12 @@ localizationReturn Localization(string localizationBase);
 /**
  * Función para prueba y empate del No-terminal (Comb)
  */
-combReturn Comb();
+combReturn Comb(string vddr, string fls);
 
 /**
  * Función para prueba y empate del No-terminal (BoolP)
  */
-void BoolP();
+boolPReturn BoolP(boolPReturn boolpAux);
 
 /**
  * Función para prueba y empate del No-terminal (Igualdad)

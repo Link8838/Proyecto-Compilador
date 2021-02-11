@@ -97,6 +97,7 @@ void Lista_Var(int lista_varTipoH){
     int linea = yylineno;
     if(!buscarIDTS(tA.valor)){      
       list<int> arrgs;
+      //printf(" INSERTAR: %s %i\n", tA.valor.c_str(), lista_varTipoH);
       insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
       dir += pilaTablaTipos.top().front().tam;
     } else {
@@ -145,16 +146,22 @@ int Compuesto(int base){
       tA = yylex();
       if (eat(NUM)) {
         //printf("%s\n",tA -> valor);
-        tA = yylex();
+        string lex = tA.valor;        
         tamArr = atoi(tA.valor.c_str());
         tipeArr = tA.tipo;
-        if (eat(CDER)) {
-          //printf("%s\n",tA -> valor);
-          TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,tipeArr);
-          insertarTipoTop(array);
-          compuestoTipo = tipeArr;//COSAS RARAS        
+        if(tipeArr == 1){
           tA = yylex();
-          Compuesto(base);
+          if (eat(CDER)) {
+            //printf("%s\n",tA -> valor);
+            TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,tipeArr);
+            insertarTipoTop(array);
+            compuestoTipo = tipeArr;//COSAS RARAS   
+            //printf("COMPUESTO: %s %i %i\n", lex.c_str(), compuestoTipo, tipeArr);     
+            tA = yylex();
+            Compuesto(base);
+          } else {
+            errorSemantico("El indice del arreglo debe ser entero: ", yylineno, lex);
+          }
       }else{
         errorSintactico();
       }
@@ -219,7 +226,7 @@ void Funciones(){
                   Bloque();
                   pilaTablaSimbolos.pop();
                   pilaTablaTipos.pop();  
-//                  listaRetorno.push_front(0);
+//                listaRetorno.push_front(0);
                   if(!buscarIDTS(idAux)){
                     //printf("BUSCAR ID FUNC\n");
                     if(equivalentesLista(tipoTipo)){
@@ -519,10 +526,24 @@ piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia(){
 }
 
 boolReturn Bool(){
-  boolReturn bul;  
-  Comb();
-  BoolP();
-  bul.tipo = 1;
+  boolReturn bul;
+  if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
+    string boolVddr = nuevoIndice();
+    string boolFls = nuevoIndice();
+    combReturn comb = Comb(boolVddr, boolFls);
+    list<string> listaIndices;
+    listaIndices.push_front(boolFls);
+    boolPReturn boopAux;
+    boopAux.listaIndices = listaIndices;
+    boopAux.dir = comb.dir;
+    boopAux.tipo = comb.tipo;
+    boolPReturn boolp = BoolP(boopAux);
+    bul.tipo = boolp.tipo;
+    bul.dir = boolp.dir;
+    generarCodigo(boolFls,"", "","");
+  } else {
+    errorSintactico();
+  }
   return bul;/////////////////ARREGLAR BOOL!
 }
 
@@ -614,6 +635,7 @@ localizationReturn Localization(string localizationBase){
     tA = yylex();
     boolReturn bul = Bool();
     int boolTipo = bul.tipo;
+    //printf("TIPO BOOL: %s %i\n", localizationBase.c_str(), boolTipo);
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
@@ -621,6 +643,7 @@ localizationReturn Localization(string localizationBase){
       if(buscarIDTS(localizationBase)){
         if(boolTipo == 1){//bool.tipo = int
           int tipoTemp = getTipoTS(localizationBase);
+          //printf("TIPO: %i\n", tipoTemp);
           if(getNombre(tipoTemp, "ARRAY")){
             localP.tipo = pilaTablaTipos.top().front().tipoBase;
             localP.dir = nuevaTemporal();            
@@ -632,7 +655,7 @@ localizationReturn Localization(string localizationBase){
             errorSemantico("El identificador no es un arreglo: ", auxlinea, auxID);
           }
         } else {
-         errorSemantico("El indice del arregloo debe ser entero: ", auxlinea, auxID);
+         errorSemantico("El indice del arreglo debe ser entero: ", auxlinea, auxID);
         }
       } else {
         errorSemantico("El id no está declarado: ", auxlinea, auxID);
@@ -646,11 +669,11 @@ localizationReturn Localization(string localizationBase){
   return localization;
 }
 
-combReturn Comb(){
+combReturn Comb(string vddr, string fls){
   combReturn comb;
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
     string iglVddr = nuevoIndice();
-    string iglFls = nuevoIndice();
+    string iglFls = fls;
     igualdadReturn igualdad = Igualdad(iglVddr, iglFls);
 
     combPReturn combPP;
@@ -670,13 +693,30 @@ combReturn Comb(){
   return comb;
 }
 
-void BoolP(){
+boolPReturn BoolP(boolPReturn boolpAux){
+  boolPReturn boolp;
   if (eat(OR)) {
     //printf("%s\n",tA -> valor);
+    string boolVddr = nuevoIndice();
+    string boolFls = nuevoIndice();
     tA = yylex();
-    Comb();
-    BoolP();
+    combReturn comb = Comb(boolVddr, boolFls);
+    boolPReturn aux;
+    if(equivalentes(boolpAux.tipo, comb.tipo)){      
+      aux.tipo = comb.tipo;
+      aux.verdadero = boolpAux.verdadero;
+      aux.falso = boolpAux.falso;
+      boolpAux.listaIndices.push_front(boolFls);
+      aux.listaIndices = boolpAux.listaIndices;
+      generarCodigo(boolpAux.falso, "", "", "");
+    } else {
+      errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
+    }
+    boolp = BoolP(aux);   
+  } else {
+    boolp = boolpAux;
   }
+  return boolp;
 }
 
 igualdadReturn Igualdad(string igVddr, string igFls){
@@ -779,7 +819,7 @@ combPReturn CombP(combPReturn combPP){
     combp.tipo = combpN.tipo;
   } else {
     //REEMPLAZARINDICES();
-    combp.tipo = 1;
+    combp = combPP;
   }
   return combp;
 }
@@ -992,14 +1032,14 @@ factorReturn Factor(){
   if (eat(ID)) {
     //printf("%s\n",tA -> valor);    
     string idLexVal = tA.valor;
+    //printf(" FACTOR: %i\n",tA.valor); 
     auxlinea = yylineno;
     auxID = tA.valor;
     tA = yylex();    
     faaccReturn faacc = Faacc(idLexVal);
     factor.dir = faacc.dir;
     factor.tipo = faacc.tipo;
-    //printf(" FACTOR: %i\n",factor.tipo);
-
+    //printf(" FACTOR: %s %i\n",idLexVal.c_str(), faacc.tipo);
   }else if (eat(PIZQ)) {
     //printf("%s\n",tA -> valor);
     auxID = tA.valor;
@@ -1016,6 +1056,7 @@ factorReturn Factor(){
   } else if (eat(NUM)) {
     //printf("%s\n",tA -> valor);
     factor.tipo = tA.tipo;
+    //printf("NUM: %s %i\n", tA.valor.c_str(), factor.tipo);
     factor.dir = atoi(tA.valor.c_str());
     auxID = tA.valor;
     tA = yylex();
@@ -1079,6 +1120,7 @@ faaccReturn Faacc(string faaccBase){
     }
   } else {
     faacc.dir = faaccBase;
+    //printf(" FAACC: %s ", faaccBase.c_str());
     faacc.tipo = getTipoTS(faaccBase);
     //printf(" FAACC: %i\n", faacc.tipo);
   }
@@ -1256,17 +1298,22 @@ string nuevaTemporal(){
 int getTipoTS(string id){
   int tipo = -1;
   for(Simbolo s : pilaTablaSimbolos.top()){
+    //printf(" [SIMBOLO: %s %s %i %i ] ", id.c_str(), s.id.c_str(), s.type, s.var);
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
+//      printf(" [SIMBOLO: %s %i %i ] ", s.id.c_str(), s.type, s.var);
       tipo = s.type;    
     }
   }
+  //printf(" [SIMBOLO: %s %i ] ", id.c_str(), tipo);  
   return tipo;
 }
 
 int getNombre(int tipoTemp, string strTipo){
   int tipo = 0;
-  if(strcmp(pilaTablaTipos.top().front().tipo.c_str(), strTipo.c_str()) == 0){
-    tipo = 1;
+  if(tipoTemp >= 0){
+    if(strcmp(pilaTablaTipos.top().front().tipo.c_str(), strTipo.c_str()) == 0){
+      tipo = 1;
+    }
   }
   return tipo;
 }

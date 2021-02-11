@@ -72,8 +72,8 @@ comeMul "<*"[^"*>"]*"*>"
 "false" { ECHO; return token.crea_token(FALSE, yytext,-1);}
 "[" { ECHO; return token.crea_token(CIZQ, yytext,-1);}
 "]" { ECHO; return token.crea_token(CDER, yytext,-1);}
-{num_ent} { ECHO; return token.crea_token(NUM, yytext, 0); }
-{num_float} { ECHO; return token.crea_token(NUM, yytext, 1); }
+{num_ent} { ECHO; return token.crea_token(NUM, yytext, 1); }
+{num_float} { ECHO; return token.crea_token(NUM, yytext, 3); }
 {num_double} { ECHO; return token.crea_token(NUM, yytext, 2); }
 {comeUn} { ECHO;}
 {comeMul} { ECHO;}

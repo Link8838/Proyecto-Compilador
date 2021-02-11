@@ -964,12 +964,12 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 75 "lexer.lex"
-{ ECHO; return token.crea_token(NUM, yytext, 0); }
+{ ECHO; return token.crea_token(NUM, yytext, 1); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 76 "lexer.lex"
-{ ECHO; return token.crea_token(NUM, yytext, 1); }
+{ ECHO; return token.crea_token(NUM, yytext, 3); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
