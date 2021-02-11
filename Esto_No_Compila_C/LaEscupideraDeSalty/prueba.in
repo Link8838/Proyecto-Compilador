@@ -1,18 +1,35 @@
 <*  Esto es un archivo
     de prueba           *>
 
+int a;
+double b;
+float c;
+char d;
+void v;
+
 func int suma(int a, int b) {
     int x;
     int y;
     int z;
     int[0] re;
+    x = 2;
+    y = 2;
 
     --Esto es un comentario.
 
-    while(true) {
+    while(x != y) {
         x = a * b;
         y = -a;
         z = 23 && false;
     }
     return re[aguacate];
+}
+
+
+func int resta(int a, int b) {
+    int x;
+    int y;
+    while(x != y) {
+        x = a * b;
+    }
 }

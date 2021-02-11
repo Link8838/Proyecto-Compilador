@@ -542,6 +542,7 @@ expReturn Exp(){
     exReturn ex = Ex(term.tipo, term.dir);
     exp.tipo = term.tipo;
     exp.dir = term.dir;
+    //printf(" EXP: %i\n", exp.tipo);
   } else {
     errorSintactico();
   }
@@ -646,8 +647,12 @@ localizationReturn Localization(string localizationBase){
 }
 
 void Comb(){
-  Igualdad();
-  CombP();
+  if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
+    Igualdad();
+    CombP();
+  } else {
+    errorSintactico();
+  }
 }
 
 void BoolP(){
@@ -660,18 +665,30 @@ void BoolP(){
 }
 
 void Igualdad(){
-  Rel();
-  IgualdadP();
+  igualdadReturn igualdad;
+  if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
+    string relVddr = nuevoIndice();
+    string relFls = nuevoIndice();
+    relReturn rel = Rel(relVddr, relFls);
+    iguPReturn igup = IguP(relVddr, relFls, rel.tipo, rel.dir);
+    //printf(" DENTRO\n");
+    igualdad.tipo = igup.tipo;
+    igualdad.dir = igup.dir;    
+  } else {
+    errorSintactico();
+  }
+  //return igualdad;
 }
 
-relReturn Rel(){
+relReturn Rel(string relVddr, string relFls){
   relReturn rel;
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
-    string vddr = nuevaEtiqueta();
-    string fls = nuevaEtiqueta();
+    string vddr = relVddr;
+    string fls = relFls;
     expReturn exp = Exp();
     xpReturn xp = Xp(vddr, fls, exp.tipo);
     rel.tipo = xp.tipo;
+    //printf("REL: %i\n", rel.tipo);
     rel.dir = xp.dir;
   } else {
     errorSintactico();
@@ -679,18 +696,51 @@ relReturn Rel(){
   return rel;
 }
 
-void IgualdadP(){
+iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
+  iguPReturn igup;
   if (eat(IGUAL)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Rel();
-    IgualdadP();
+    relReturn rel = Rel(relVddr, relFls);
+    igup.verdadero = relVddr;
+    igup.falso = relFls;
+    if(equivalentes(tipoH, rel.tipo)){
+      igup.dir = nuevaTemporal();
+      int tipoTemp = max(tipoH, rel.tipo);
+      //int d1;
+      //int d2;
+      generarCodigo(igup.dir, "=", "==", igup.dir);
+      generarCodigo("if", direc, "goto", rel.verdadero);
+      generarCodigo("goto", "", "", rel.falso);
+    } else {
+      errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
+    }
+    igup = IguP(igup.verdadero, igup.falso, tipoH, igup.dir);
   } else if (eat(DIFF)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Rel();
-    IgualdadP();
+    relReturn rel = Rel(relVddr, relFls);
+    igup.verdadero = relVddr;
+    igup.falso = relFls;
+    if(equivalentes(tipoH, rel.tipo)){      
+      igup.dir = nuevaTemporal();
+      int tipoTemp = max(tipoH, rel.tipo);
+      //int d1;
+      //int d2;      
+      generarCodigo(igup.dir, "=", "!=", igup.dir);
+      generarCodigo("if", direc, "goto", rel.verdadero);
+      generarCodigo("goto", "", "", rel.falso);
+    } else {
+      errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
+    }    
+    igup = IguP(igup.verdadero, igup.falso, tipoH, igup.dir);
+  } else {
+    igup.tipo = tipoH;
+    igup.dir = direc;
+    igup.verdadero = relVddr;
+    igup.falso = relFls;
   }
+  return igup;
 }
 
 void CombP(){
@@ -764,6 +814,10 @@ xpReturn Xp(string v, string f, int tipo){
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
+  } else {
+    xp.tipo = tipo;
+    xp.verdadero = v;
+    xp.falso = f;
   }
   return xp;
 }
@@ -775,6 +829,7 @@ termReturn Term(){
     terPReturn terp = TerP(unario.tipo, unario.dir);
     term.tipo = terp.tipo;
     term.dir = terp.dir;
+    //printf(" TERM: %i\n", term.tipo);
   } else {
     errorSintactico();
   }
@@ -840,6 +895,7 @@ unarioReturn Unario(){
     factorReturn factor = Factor();
     unario.tipo = factor.tipo;
     unario.dir = factor.dir;
+    //printf(" UNARIO: %i\n", unario.tipo);
   }else{
     errorSintactico();
   }
@@ -902,7 +958,7 @@ terPReturn TerP(int tipe, string dire){
 factorReturn Factor(){
   factorReturn factor;
   if (eat(ID)) {
-    //printf("%s\n",tA -> valor);
+    //printf("%s\n",tA -> valor);    
     string idLexVal = tA.valor;
     auxlinea = yylineno;
     auxID = tA.valor;
@@ -910,6 +966,7 @@ factorReturn Factor(){
     faaccReturn faacc = Faacc(idLexVal);
     factor.dir = faacc.dir;
     factor.tipo = faacc.tipo;
+    //printf(" FACTOR: %i\n",factor.tipo);
 
   }else if (eat(PIZQ)) {
     //printf("%s\n",tA -> valor);
@@ -942,7 +999,7 @@ factorReturn Factor(){
     factor.tipo = 1;    
     tA = yylex();
   } else if (eat(STR)) {
-    //printf("%s\n",tA -> valor);
+    //printf("FACTOR: %s\n",tA.valor);
     auxID = tA.valor;
     tablaCadenas.push(tA.valor);
     factor.dir = tablaCadenas.top();
@@ -991,6 +1048,7 @@ faaccReturn Faacc(string faaccBase){
   } else {
     faacc.dir = faaccBase;
     faacc.tipo = getTipoTS(faaccBase);
+    //printf(" FAACC: %i\n", faacc.tipo);
   }
   return faacc;
 }
@@ -1243,6 +1301,7 @@ int equivalenteListas(list<int> uno, list<int> dos){
 }
 
 int equivalentes(int tipoH, int unarioH){
+  printf("\n EQUIVALENTES: %i, %i\n", tipoH, unarioH);
   if(tipoH == unarioH){
     return 1;
   } else {

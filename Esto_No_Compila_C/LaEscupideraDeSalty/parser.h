@@ -161,12 +161,12 @@ void Igualdad();
 /**
  * Función para prueba y empate del No-terminal (Rel)
  */
-relReturn Rel();
+relReturn Rel(string relVddr, string relFls);
 
 /**
  * Función para prueba y empate del No-terminal (IgualdadP)
  */
-void IgualdadP();
+iguPReturn IguP(string relVddr, string relFls, int tipoH, string dir);
 
 /**
  * Función para prueba y empate del No-terminal (CombP)

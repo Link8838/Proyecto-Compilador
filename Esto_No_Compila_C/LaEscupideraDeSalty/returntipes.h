@@ -47,24 +47,56 @@ struct boolReturn{
 };
 
 struct combReturn{
-    string fls;
+    string dir;
     int tipo;
 
     combReturn(){}
 
-    combReturn(string fls, int tipo){
-        this -> fls = fls;
+    combReturn(string dir, int tipo){
+        this -> dir = dir;
         this -> tipo = tipo;
+    }
+};
+
+struct combPReturn{
+    string dir;
+    int tipo;
+    list<string> listaIndices;
+
+    combPReturn(){}
+
+    combPReturn(string dir, int tipo, list<string> listaIndices){
+        this -> dir = dir;
+        this -> tipo = tipo;
+        this -> listaIndices = listaIndices;
     }
 };
 
 struct igualdadReturn{
     string dir;
+    string verdadero;
     int tipo;
 
     igualdadReturn(){}
 
-    igualdadReturn(string dir, int tipo){
+    igualdadReturn(string dir, int tipo, string verdadero){
+        this -> dir = dir;
+        this -> tipo = tipo;
+        this -> verdadero = verdadero;
+    }
+};
+
+struct iguPReturn{
+    string verdadero;
+    string falso;
+    string dir;
+    int tipo;
+
+    iguPReturn(){}
+
+    iguPReturn(string verdadero, string falso, string dir, int tipo){
+        this -> verdadero = verdadero;
+        this -> falso = falso;
         this -> dir = dir;
         this -> tipo = tipo;
     }
