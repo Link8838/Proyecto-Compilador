@@ -646,13 +646,28 @@ localizationReturn Localization(string localizationBase){
   return localization;
 }
 
-void Comb(){
+combReturn Comb(){
+  combReturn comb;
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
-    Igualdad();
-    CombP();
+    string iglVddr = nuevoIndice();
+    string iglFls = nuevoIndice();
+    igualdadReturn igualdad = Igualdad(iglVddr, iglFls);
+
+    combPReturn combPP;
+    combPP.tipo = igualdad.tipo;
+    combPP.dir = igualdad.dir;
+    list<string> listaIn;
+    listaIn.push_front(igualdad.verdadero);
+    combPP.listaIndices = listaIn;
+
+    combPReturn combp = CombP(combPP);
+    comb.tipo = combp.tipo;
+    comb.dir = combp.dir;
+    generarCodigo(igualdad.verdadero, "", "", "");
   } else {
     errorSintactico();
   }
+  return comb;
 }
 
 void BoolP(){
@@ -664,20 +679,19 @@ void BoolP(){
   }
 }
 
-void Igualdad(){
+igualdadReturn Igualdad(string igVddr, string igFls){
   igualdadReturn igualdad;
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
-    string relVddr = nuevoIndice();
-    string relFls = nuevoIndice();
+    string relVddr = igVddr;
+    string relFls = igFls;
     relReturn rel = Rel(relVddr, relFls);
     iguPReturn igup = IguP(relVddr, relFls, rel.tipo, rel.dir);
-    //printf(" DENTRO\n");
     igualdad.tipo = igup.tipo;
-    igualdad.dir = igup.dir;    
+    igualdad.dir = igup.dir;
   } else {
     errorSintactico();
   }
-  //return igualdad;
+  return igualdad;
 }
 
 relReturn Rel(string relVddr, string relFls){
@@ -743,13 +757,31 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
   return igup;
 }
 
-void CombP(){
+combPReturn CombP(combPReturn combPP){
+  combPReturn combp;
   if (eat(AND)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Igualdad();
-    CombP();
+    string iglVddr = nuevoIndice();
+    string iglFls = nuevoIndice();
+    igualdadReturn igualdad = Igualdad(iglVddr, iglFls);
+    combPReturn combp1;
+    if(combPP.tipo, igualdad.tipo){
+      combp1.tipo = combPP.tipo;
+      combp1.dir = combPP.dir;
+      combp1.listaIndices = combPP.listaIndices;
+      combp1.listaIndices.push_front(igualdad.verdadero);
+      generarCodigo(igualdad.verdadero,"","","");
+    } else {
+      errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
+    }
+    combPReturn combpN = CombP(combp1);
+    combp.tipo = combpN.tipo;
+  } else {
+    //REEMPLAZARINDICES();
+    combp.tipo = 1;
   }
+  return combp;
 }
 
 xpReturn Xp(string v, string f, int tipo){
@@ -1301,7 +1333,7 @@ int equivalenteListas(list<int> uno, list<int> dos){
 }
 
 int equivalentes(int tipoH, int unarioH){
-  printf("\n EQUIVALENTES: %i, %i\n", tipoH, unarioH);
+  //printf("\n EQUIVALENTES: %i, %i\n", tipoH, unarioH);
   if(tipoH == unarioH){
     return 1;
   } else {

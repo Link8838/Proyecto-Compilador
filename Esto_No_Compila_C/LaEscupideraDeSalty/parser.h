@@ -146,7 +146,7 @@ localizationReturn Localization(string localizationBase);
 /**
  * Función para prueba y empate del No-terminal (Comb)
  */
-void Comb();
+combReturn Comb();
 
 /**
  * Función para prueba y empate del No-terminal (BoolP)
@@ -156,7 +156,7 @@ void BoolP();
 /**
  * Función para prueba y empate del No-terminal (Igualdad)
  */
-void Igualdad();
+igualdadReturn Igualdad(string vddr, string fls);
 
 /**
  * Función para prueba y empate del No-terminal (Rel)
@@ -171,7 +171,7 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string dir);
 /**
  * Función para prueba y empate del No-terminal (CombP)
  */
-void CombP();
+combPReturn CombP(combPReturn combPP);
 
 /**
  * Función para prueba y empate del No-terminal (Xp)

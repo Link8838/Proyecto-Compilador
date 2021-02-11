@@ -29,7 +29,9 @@ func int suma(int a, int b) {
 func int resta(int a, int b) {
     int x;
     int y;
-    while(x != y) {
+    while(x >= y) {
         x = a * b;
+        y = a / b;
+        x = a % b;
     }
 }
