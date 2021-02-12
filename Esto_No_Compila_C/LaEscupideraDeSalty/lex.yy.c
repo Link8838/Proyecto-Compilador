@@ -289,34 +289,34 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 	*yy_cp = '\0'; \
 	yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 53
-#define YY_END_OF_BUFFER 54
-static yyconst short int yy_acclist[213] =
+#define YY_NUM_RULES 54
+#define YY_END_OF_BUFFER 55
+static yyconst short int yy_acclist[214] =
     {   0,
-       54,   52,   53,   51,   52,   53,   51,   53,   38,   52,
-       53,   52,   53,   37,   52,   53,   52,   53,   52,   53,
-       11,   52,   53,   12,   52,   53,   35,   52,   53,   33,
-       52,   53,    1,   52,   53,   34,   39,   52,   53,   52,
-       53,   36,   52,   53,   44,   52,   53,   23,   52,   53,
-        2,   52,   53,   28,   52,   53,   32,   52,   53,   30,
-       52,   53,   49,   52,   53,   42,   52,   53,   43,   52,
-       53,   49,   52,   53,   49,   52,   53,   49,   52,   53,
-       49,   52,   53,   49,   52,   53,   49,   52,   53,   49,
-       52,   53,   49,   52,   53,   49,   52,   53,   49,   52,
+       55,   53,   54,   52,   53,   54,   52,   54,   39,   53,
+       54,   53,   54,   38,   53,   54,   53,   54,   53,   54,
+       11,   53,   54,   12,   53,   54,   36,   53,   54,   34,
+       53,   54,    1,   53,   54,   35,   40,   53,   54,   53,
+       54,   37,   53,   54,   45,   53,   54,   24,   53,   54,
+        2,   53,   54,   29,   53,   54,   33,   53,   54,   31,
+       53,   54,   50,   53,   54,   43,   53,   54,   44,   53,
+       54,   50,   53,   54,   50,   53,   54,   50,   53,   54,
+       50,   53,   54,   50,   53,   54,   50,   53,   54,   50,
+       53,   54,   50,   53,   54,   50,   53,   54,   50,   53,
 
-       53,   49,   52,   53,   49,   52,   53,    3,   52,   53,
-       52,   53,    4,   52,   53,   27,   50,   25,   47,   45,
-       46,   44,   29,   26,   31,   49,   49,   49,   49,   49,
-       49,   49,   49,   49,   49,   13,   49,   49,   49,   49,
-       49,   49,   49,   49,   49,   24,   47,   49,   49,   49,
-       49,   49,   49,   49,   49,   49,    5,   49,   49,   49,
-       49,   49,   49,   49,   49,   48,   49,   18,   49,    7,
-       49,   49,   49,   14,   49,   49,   49,   10,   49,   49,
-       49,   22,   49,   49,   40,   49,    9,   49,   49,   16,
-       49,   49,   49,   41,   49,    6,   49,   21,   49,   49,
+       54,   50,   53,   54,   50,   53,   54,    3,   53,   54,
+       53,   54,    4,   53,   54,   28,   51,   26,   48,   46,
+       47,   45,   30,   27,   32,   50,   50,   50,   50,   50,
+       23,   50,   50,   50,   50,   50,   13,   50,   50,   50,
+       50,   50,   50,   50,   50,   50,   25,   48,   50,   50,
+       50,   50,   50,   50,   50,   50,   50,    5,   50,   50,
+       50,   50,   50,   50,   50,   50,   49,   50,   18,   50,
+        7,   50,   50,   50,   14,   50,   50,   50,   10,   50,
+       50,   50,   22,   50,   50,   41,   50,    9,   50,   50,
+       16,   50,   50,   50,   42,   50,    6,   50,   21,   50,
 
-       49,   15,   49,   49,    8,   49,   20,   49,   17,   49,
-       19,   49
+       50,   50,   15,   50,   50,    8,   50,   20,   50,   17,
+       50,   19,   50
     } ;
 
 static yyconst short int yy_accept[132] =
@@ -327,15 +327,15 @@ static yyconst short int yy_accept[132] =
        78,   81,   84,   87,   90,   93,   96,   99,  102,  105,
       108,  111,  113,  116,  117,  117,  118,  118,  119,  119,
       119,  120,  122,  122,  123,  123,  124,  125,  126,  127,
-      128,  129,  130,  131,  132,  133,  134,  135,  136,  138,
-      139,  140,  141,  142,  143,  144,  145,  146,  147,  148,
-      148,  148,  149,  150,  151,  152,  153,  154,  155,  156,
-      157,  159,  160,  161,  162,  163,  164,  165,  166,  167,
+      128,  129,  130,  131,  133,  134,  135,  136,  137,  139,
+      140,  141,  142,  143,  144,  145,  146,  147,  148,  149,
+      149,  149,  150,  151,  152,  153,  154,  155,  156,  157,
+      158,  160,  161,  162,  163,  164,  165,  166,  167,  168,
 
-      168,  170,  172,  173,  174,  176,  177,  178,  180,  181,
-      182,  184,  185,  187,  189,  190,  192,  193,  194,  196,
-      198,  200,  201,  202,  204,  205,  207,  209,  211,  213,
-      213
+      169,  171,  173,  174,  175,  177,  178,  179,  181,  182,
+      183,  185,  186,  188,  190,  191,  193,  194,  195,  197,
+      199,  201,  202,  203,  205,  206,  208,  210,  212,  214,
+      214
     } ;
 
 static yyconst int yy_ec[256] =
@@ -859,117 +859,117 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 54 "lexer.lex"
-{ ECHO; return token.crea_token(DOSPUNTOS, yytext,-1);}
+{ ECHO; return token.crea_token(DO, yytext,-1);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 55 "lexer.lex"
-{ ECHO; return token.crea_token(OR, yytext,-1);}
+{ ECHO; return token.crea_token(DOSPUNTOS, yytext,-1);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 56 "lexer.lex"
-{ ECHO; return token.crea_token(AND, yytext,-1);}
+{ ECHO; return token.crea_token(OR, yytext,-1);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 57 "lexer.lex"
-{ ECHO; return token.crea_token(IGUAL, yytext,-1);}
+{ ECHO; return token.crea_token(AND, yytext,-1);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 58 "lexer.lex"
-{ ECHO; return token.crea_token(DIFF, yytext,-1);}
+{ ECHO; return token.crea_token(IGUAL, yytext,-1);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 59 "lexer.lex"
-{ ECHO; return token.crea_token(MENOR, yytext,-1);}
+{ ECHO; return token.crea_token(DIFF, yytext,-1);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 60 "lexer.lex"
-{ ECHO; return token.crea_token(MENOREQ, yytext,-1);}
+{ ECHO; return token.crea_token(MENOR, yytext,-1);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 61 "lexer.lex"
-{ ECHO; return token.crea_token(MAYOR, yytext,-1);}
+{ ECHO; return token.crea_token(MENOREQ, yytext,-1);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 62 "lexer.lex"
-{ ECHO; return token.crea_token(MAYOREQ, yytext,-1);}
+{ ECHO; return token.crea_token(MAYOR, yytext,-1);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 63 "lexer.lex"
-{ ECHO; return token.crea_token(ASIG, yytext,-1);}
+{ ECHO; return token.crea_token(MAYOREQ, yytext,-1);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 64 "lexer.lex"
-{ ECHO; return token.crea_token(MAS, yytext,-1);}
+{ ECHO; return token.crea_token(ASIG, yytext,-1);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 65 "lexer.lex"
-{ ECHO; return token.crea_token(MENOS, yytext,-1);}
+{ ECHO; return token.crea_token(MAS, yytext,-1);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 66 "lexer.lex"
-{ ECHO; return token.crea_token(MULT, yytext,-1);}
+{ ECHO; return token.crea_token(MENOS, yytext,-1);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 67 "lexer.lex"
-{ ECHO; return token.crea_token(DIV, yytext,-1);}
+{ ECHO; return token.crea_token(MULT, yytext,-1);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 68 "lexer.lex"
-{ ECHO; return token.crea_token(MOD, yytext,-1);}
+{ ECHO; return token.crea_token(DIV, yytext,-1);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 69 "lexer.lex"
-{ ECHO; return token.crea_token(NEGA, yytext,-1);}
+{ ECHO; return token.crea_token(MOD, yytext,-1);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 70 "lexer.lex"
-{ ECHO; return token.crea_token(NEG, yytext,-1);}
+{ ECHO; return token.crea_token(NEGA, yytext,-1);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 71 "lexer.lex"
-{ ECHO; return token.crea_token(TRUE, yytext,-1);}
+{ ECHO; return token.crea_token(NEG, yytext,-1);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 72 "lexer.lex"
-{ ECHO; return token.crea_token(FALSE, yytext,-1);}
+{ ECHO; return token.crea_token(TRUE, yytext,-1);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 73 "lexer.lex"
-{ ECHO; return token.crea_token(CIZQ, yytext,-1);}
+{ ECHO; return token.crea_token(FALSE, yytext,-1);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 74 "lexer.lex"
-{ ECHO; return token.crea_token(CDER, yytext,-1);}
+{ ECHO; return token.crea_token(CIZQ, yytext,-1);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 75 "lexer.lex"
-{ ECHO; return token.crea_token(NUM, yytext, 1); }
+{ ECHO; return token.crea_token(CDER, yytext,-1);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 76 "lexer.lex"
-{ ECHO; return token.crea_token(NUM, yytext, 3); }
+{ ECHO; return token.crea_token(NUM, yytext, 1); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
@@ -979,7 +979,7 @@ YY_RULE_SETUP
 case 47:
 YY_RULE_SETUP
 #line 78 "lexer.lex"
-{ ECHO;}
+{ ECHO; return token.crea_token(NUM, yytext, 2); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
@@ -989,33 +989,38 @@ YY_RULE_SETUP
 case 49:
 YY_RULE_SETUP
 #line 80 "lexer.lex"
-{ ECHO; return token.crea_token(ID, yytext,-1); }
+{ ECHO;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 81 "lexer.lex"
-{ ECHO; return token.crea_token(STR, yytext,-1); }
+{ ECHO; return token.crea_token(ID, yytext,-1); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 82 "lexer.lex"
-{ ECHO; }
-	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-#line 84 "lexer.lex"
-{ puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
+{ ECHO; return token.crea_token(STR, yytext,-1); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
+#line 83 "lexer.lex"
+{ ECHO; }
+	YY_BREAK
+case YY_STATE_EOF(INITIAL):
 #line 85 "lexer.lex"
-{ printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
+{ puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 87 "lexer.lex"
+#line 86 "lexer.lex"
+{ printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
+	YY_BREAK
+case 54:
+YY_RULE_SETUP
+#line 88 "lexer.lex"
 ECHO;
 	YY_BREAK
-#line 1019 "lex.yy.c"
+#line 1024 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1897,5 +1902,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 87 "lexer.lex"
+#line 88 "lexer.lex"
 

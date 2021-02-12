@@ -21,7 +21,7 @@ extern Token yylex();
 extern int yylineno;
 
 int auxlinea = 0;
-string auxID = "";
+string auxID = " ";
 
 int dir = -1;
 int iE = 0;
@@ -118,7 +118,7 @@ int Basico(){
     tA = yylex();
   } else if (eat(FLOAT)) {
     //printf("%s\n",tA -> valor);
-    basicoTipo = 3;    
+    basicoTipo = 2;    
     tA = yylex();
   } else if (eat(CHAR)) {
     //printf("%s\n",tA -> valor);
@@ -229,11 +229,15 @@ void Funciones(){
 //                listaRetorno.push_front(0);
                   if(!buscarIDTS(idAux)){
                     //printf("BUSCAR ID FUNC\n");
-                    if(equivalentesLista(tipoTipo)){
-                      insertarSimbolo(idAux, dir, tipoTipo, 2, argumentosLista);//QUIZÁ NO ES 0
-                      generarCodigo(nuevaEtiqueta(), idAux, "", nuevoIndice());
+                    if(tipoTipo != 0 && listaRetorno.size() <= 0){
+                      errorSemantico("Falta valor de retorno de la funcion:", linea, idAux);                      
                     } else {
-                      errorSemantico("Los tipos de retorno no coinciden:", linea, idAux);
+                      if(equivalentesLista(tipoTipo)){
+                        insertarSimbolo(idAux, dir, tipoTipo, 2, argumentosLista);//QUIZÁ NO ES 0
+                        generarCodigo(nuevaEtiqueta(), idAux, " ", nuevoIndice());
+                      } else {
+                        errorSemantico("Los tipos de retorno no coinciden:", linea, idAux);
+                      }                      
                     }
                   } else {
                     errorSemantico("El ID ya fue declarado:", linea, idAux);
@@ -249,7 +253,7 @@ void Funciones(){
         errorSintactico();
       }
   } else if(eat(FIN)){
-    printf(">Fin del analisis Sintantico\n**CADENA ACEPTADA**\n");
+    printf(">Fin del analisis Sintantico\n>Fin del analisis Semantico\n  **COMPILADO EXITOSO**\n");
   }
 }
 
@@ -328,24 +332,37 @@ list<int> Lista_ArgsP(list<int> lista_argsPListaH){
   return lista_argsPListaS;
 }
 
-void Instrucciones(){
-  Sentencia();
-  InstruccionesP();
+string Instrucciones(){
+  string sigR;
+  if(eat(IF)||eat(RETURN)||eat(ID)||eat(WHILE)||eat(DO)||eat(BREAK)||eat(LLAIZQ)||eat(SWITCH)||eat(PRINT)||eat(SCAN)){
+    string sentencia = nuevaEtiqueta();
+    string sigRR = Sentencia(sentencia);
+    generarCodigo(sigR," "," "," ");
+    sigR = InstruccionesP();
+  } else {
+    errorSintactico();
+  }
+  return sigR;
 }
 
-void Sentencia(){
+string Sentencia(string siguiente){
   if (eat(IF)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
       if (eat(PIZQ)) {
           //printf("%s\n",tA -> valor);
           tA = yylex();
-          Bool();
+          string vddr = nuevaEtiqueta();
+          string fls = nuevoIndice();
+          boolReturn bulif = Bool(vddr,fls);
+          generarCodigo(bulif.verdadero," ", " ", " ");
           if (eat(PDER)) {
               //printf("%s\n",tA -> valor);
               tA = yylex();
-              Sentencia();
-              Sent();
+              string sig = Sentencia(siguiente);
+              list<string> listaIndices;
+              listaIndices.push_front(bulif.falso);
+              Sent(listaIndices, sig);
           }else{
             errorSintactico();
           }
@@ -357,14 +374,20 @@ void Sentencia(){
       tA = yylex();
       Ret();
   } else if (eat(ID)) {
-    Pierna_Izquierda_Exodia();
+    piernaIzquieraExodiaReturn piE = Pierna_Izquierda_Exodia();    
     if (eat(ASIG)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      Bool();
+      boolReturn bulPI = Bool(" "," ");
       if (eat(PCOMA)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
+        if(equivalentes(piE.tipo, bulPI.tipo)){
+          //Reducir;
+          generarCodigo(piE.dir,"="," ", bulPI.dir);
+        } else {
+          errorSemantico("Tipos incompatiblesss: ", auxlinea, auxID);
+        }
       }else{
         errorSintactico();
       }
@@ -372,37 +395,44 @@ void Sentencia(){
       errorSintactico();
     }
   } else if (eat(WHILE)) {
+    //printf("%s\n",tA -> valor);    
+    tA = yylex();
+    if (eat(PIZQ)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      if (eat(PIZQ)) {
+      string boolVddr = nuevaEtiqueta();
+      string boolFls = siguiente;
+      generarCodigo(siguiente," ", " ", " ");
+      boolReturn bulw = Bool(boolVddr, boolFls);
+      generarCodigo(bulw.verdadero," ", " ", " ");
+      if (eat(PDER)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
-        Bool();
-        if (eat(PDER)) {
-          //printf("%s\n",tA -> valor);
-          tA = yylex();
-          Sentencia();
-        }else{
-          errorSintactico();
-        }
+        string sigw = siguiente = nuevaEtiqueta();
+        Sentencia(siguiente);
+        generarCodigo("goto"," "," ", sigw);
       }else{
         errorSintactico();
       }
+    }else{
+      errorSintactico();
+    }
   } else if (eat(DO)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Sentencia();
+    siguiente = nuevaEtiqueta();
+    string sigdo = Sentencia(siguiente);
+    generarCodigo(sigdo," ", " ", " ");
     if (eat(WHILE)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
       if (eat(PIZQ)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
-        Bool();
+        Bool(nuevaEtiqueta(),sigdo);
         if (eat(PDER)) {
           //printf("%s\n",tA -> valor);
           tA = yylex();
-          Sentencia();
         }else{
           errorSintactico();
         }
@@ -418,6 +448,7 @@ void Sentencia(){
     if (eat(PCOMA)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
+      generarCodigo("goto"," ", " ", siguiente);
     }else{
       errorSintactico();
     }
@@ -426,17 +457,20 @@ void Sentencia(){
   } else if (eat(SWITCH)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    if (eat(PDER)) {
+    if (eat(PIZQ)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      Bool();
-      if (eat(PIZQ)) {
+      Bool(" "," ");
+      if (eat(PDER)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
         if (eat(LLAIZQ)) {
           //printf("%s\n",tA -> valor);
           tA = yylex();
-          Casos();
+          casosReturn casos = Casos(siguiente);
+          generarCodigo("goto"," ", " ",casos.prueba);
+          generarCodigo(casos.prueba," ", " ", " ");
+          generarCodigo(casos.prueba, " ", " ", " ");
           if (eat(LLADER)) {
             //printf("%s\n",tA -> valor);
             tA = yylex();
@@ -455,49 +489,70 @@ void Sentencia(){
   } else if (eat(PRINT)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    Exp();
+    expReturn exp = Exp();
     if (eat(PCOMA)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
+        generarCodigo("print"," ", " ", exp.dir);
     }else{
       errorSintactico();
     }
   } else if (eat(SCAN)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      Pierna_Izquierda_Exodia();
+      if (eat(ID)) {
+        piernaIzquieraExodiaReturn piES = Pierna_Izquierda_Exodia();
+        generarCodigo("scan", " ", " ", piES.dir);
+      } else {
+        errorSintactico();        
+      }
   }else{
     errorSintactico();
   }
+  return siguiente;
 }
 
-void InstruccionesP(){
+string InstruccionesP(){
+  string sigR;
   if(eat(IF)||eat(RETURN)||eat(ID)||eat(WHILE)||eat(DO)||eat(BREAK)||eat(LLAIZQ)||eat(SWITCH)||eat(PRINT)||eat(SCAN)){
-    Sentencia();
-    InstruccionesP();
+    string sentencia = nuevaEtiqueta();
+    sigR = Sentencia(sentencia);
+    generarCodigo(sigR," "," "," ");
+    sigR = InstruccionesP();
   }
+  return sigR;
 }
 
-void Sent(){
+void Sent(list<string> listaI, string sig){
   if (eat(ELSE)) {
-      //printf("%s\n",tA -> valor);
-      tA = yylex();
-      Sentencia();
+    //printf("%s\n",tA -> valor);
+    string siguiente = sig;
+    tA = yylex();
+    string sentenSiguiente = Sentencia(siguiente);
+    generarCodigo("goto"," " , " ", sentenSiguiente);
+    generarCodigo(listaI.front()," "," "," ");
+    //REEMPLAZAR INDICES
+  } else {
+    //REEMPLAZAR INDICES
   }
 }
 
 void Ret(){
-  if (eat(NEGA) || eat(MENOS) || eat(ID)) {
-    Exp();
+  if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
+    expReturn exp = Exp();
+    listaRetorno.push_front(exp.tipo);
+    generarCodigo("return"," "," ",exp.dir);
     if (eat(PCOMA)) {
-        //printf("%s\n",tA -> valor);
-        tA = yylex();
+      //printf("%s\n",tA -> valor);
+      tA = yylex();
     }else{
       errorSintactico();
     }
   } else if (eat(PCOMA)) {
-        //printf("%s\n",tA -> valor);
-        tA = yylex();
+    //printf("%s\n",tA -> valor);
+    listaRetorno.push_front(0);
+    generarCodigo("return"," "," "," ");
+    tA = yylex();
   }else{
     errorSintactico();
   }
@@ -513,7 +568,6 @@ piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia(){
     tA = yylex();
 
     pttReturn aux = Ptt(idLexVal);
-
     piE.dir = aux.dir;
     piE.tipo = aux.tipo;
     piE.id = idLexVal;
@@ -525,11 +579,16 @@ piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia(){
   return piE;
 }
 
-boolReturn Bool(){
+boolReturn Bool(string v, string f){
   boolReturn bul;
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
-    string boolVddr = nuevoIndice();
-    string boolFls = nuevoIndice();
+    string boolVddr = v;
+    string boolFls = f;
+    if(strcmp(v.c_str(), " ") == 0 && strcmp(f.c_str(), " ") == 0){
+      boolVddr = nuevoIndice();
+      boolFls = nuevoIndice();
+      //printf(" BOOL ");
+    }
     combReturn comb = Comb(boolVddr, boolFls);
     list<string> listaIndices;
     listaIndices.push_front(boolFls);
@@ -540,20 +599,27 @@ boolReturn Bool(){
     boolPReturn boolp = BoolP(boopAux);
     bul.tipo = boolp.tipo;
     bul.dir = boolp.dir;
-    generarCodigo(boolFls,"", "","");
+    generarCodigo(boolFls," ", " "," ");
   } else {
     errorSintactico();
   }
   return bul;/////////////////ARREGLAR BOOL!
 }
 
-void Casos(){
+casosReturn Casos(string siguiente){
+  casosReturn casos;
   if (eat(CASE)) {
-      Caso();
-      Casos();
+    casos.siguiente = siguiente;
+    casoReturn caso = Caso(casos.siguiente);    
+    casos = Casos(siguiente);
+    casos.prueba = caso.prueba;
   } else if (eat(DEFAULT)) {
-      Predeterminado();
+    predeterminadoReturn predeterminado = Predeterminado(siguiente);
+    casos.prueba = predeterminado.prueba;
+  } else {
+    casos.prueba = " ";
   }
+  return casos;
 }
 
 expReturn Exp(){
@@ -570,17 +636,24 @@ expReturn Exp(){
   return exp;
 }
 
-void Caso(){
+casoReturn Caso(string siguiente){
+  casoReturn caso;
   if (eat(CASE)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
     if (eat(NUM)) {
         //printf("%s\n",tA -> valor);
-        tA = yylex();
+      string numeroLexVal = tA.valor;
+      tA = yylex();
       if (eat(DOSPUNTOS)) {
         //printf("%s\n",tA -> valor);
+        caso.inicio = nuevaEtiqueta();
+        caso.siguiente = nuevaEtiqueta();
         tA = yylex();
         Instrucciones();
+        generarCodigo("if", numeroLexVal, "goto", caso.inicio);
+        caso.prueba = "if  goto ";
+        generarCodigo(caso.inicio, " ", " "," ");
       }else{
         errorSintactico();
       }
@@ -590,22 +663,30 @@ void Caso(){
   }else{
     errorSintactico();
   }
+  return caso;
 }
 
-void Predeterminado(){
+predeterminadoReturn Predeterminado(string siguiente){
+  predeterminadoReturn predeterminado;
   if (eat(DEFAULT)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    if (eat(PCOMA)) {
+    if (eat(DOSPUNTOS)) {
       //printf("%s\n",tA -> valor);
+      predeterminado.inicio = nuevaEtiqueta();
+      predeterminado.siguiente = nuevaEtiqueta();
       tA = yylex();
       Instrucciones();
+      generarCodigo("goto", " ", " ", predeterminado.inicio);
+      predeterminado.prueba = " goto ";
+      generarCodigo(predeterminado.inicio, " ", " "," ");
     }else{
       errorSintactico();
     }
   }else{
     errorSintactico();
   }
+  return predeterminado;
 }
 
 pttReturn Ptt(string pttBase){
@@ -623,7 +704,6 @@ pttReturn Ptt(string pttBase){
     } else{
       errorSemantico("El id no esta declarado: ", auxlinea, pttBase);
     }
-
   }
   return ptt;
 }
@@ -633,13 +713,13 @@ localizationReturn Localization(string localizationBase){
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    boolReturn bul = Bool();
+    boolReturn bul = Bool(" "," ");
     int boolTipo = bul.tipo;
     //printf("TIPO BOOL: %s %i\n", localizationBase.c_str(), boolTipo);
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      localPReturn localP = LocalP(localizationBase, -1, "");
+      localPReturn localP = LocalP(localizationBase, -1, " ");
       if(buscarIDTS(localizationBase)){
         if(boolTipo == 1){//bool.tipo = int
           int tipoTemp = getTipoTS(localizationBase);
@@ -686,7 +766,7 @@ combReturn Comb(string vddr, string fls){
     combPReturn combp = CombP(combPP);
     comb.tipo = combp.tipo;
     comb.dir = combp.dir;
-    generarCodigo(igualdad.verdadero, "", "", "");
+    generarCodigo(igualdad.verdadero, " ", " ", " ");
   } else {
     errorSintactico();
   }
@@ -708,7 +788,7 @@ boolPReturn BoolP(boolPReturn boolpAux){
       aux.falso = boolpAux.falso;
       boolpAux.listaIndices.push_front(boolFls);
       aux.listaIndices = boolpAux.listaIndices;
-      generarCodigo(boolpAux.falso, "", "", "");
+      generarCodigo(boolpAux.falso, " ", " ", " ");
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
     }
@@ -765,7 +845,7 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
       //int d2;
       generarCodigo(igup.dir, "=", "==", igup.dir);
       generarCodigo("if", direc, "goto", rel.verdadero);
-      generarCodigo("goto", "", "", rel.falso);
+      generarCodigo("goto", " ", " ", rel.falso);
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
     }
@@ -783,7 +863,7 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
       //int d2;      
       generarCodigo(igup.dir, "=", "!=", igup.dir);
       generarCodigo("if", direc, "goto", rel.verdadero);
-      generarCodigo("goto", "", "", rel.falso);
+      generarCodigo("goto", " ", " ", rel.falso);
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
     }    
@@ -811,7 +891,7 @@ combPReturn CombP(combPReturn combPP){
       combp1.dir = combPP.dir;
       combp1.listaIndices = combPP.listaIndices;
       combp1.listaIndices.push_front(igualdad.verdadero);
-      generarCodigo(igualdad.verdadero,"","","");
+      generarCodigo(igualdad.verdadero," "," "," ");
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
     }
@@ -837,7 +917,7 @@ xpReturn Xp(string v, string f, int tipo){
       int d2 = max(xp.tipo, exp.tipo);
       generarCodigo(xp.dir+"=", xp.dir, "<", exp.dir);
       generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", "", "", xp.falso);
+      generarCodigo("goto", " ", " ", xp.falso);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -852,7 +932,7 @@ xpReturn Xp(string v, string f, int tipo){
       int d2 = max(xp.tipo, exp.tipo);
       generarCodigo(xp.dir+"=", xp.dir, "<=", exp.dir);
       generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", "", "", xp.falso);
+      generarCodigo("goto", " ", " ", xp.falso);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -867,7 +947,7 @@ xpReturn Xp(string v, string f, int tipo){
       int d2 = max(xp.tipo, exp.tipo);
       generarCodigo(xp.dir+"=", xp.dir, ">=", exp.dir);
       generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", "", "", xp.falso);
+      generarCodigo("goto", " ", " ", xp.falso);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -882,7 +962,7 @@ xpReturn Xp(string v, string f, int tipo){
       int d2 = max(xp.tipo, exp.tipo);
       generarCodigo(xp.dir+"=", xp.dir, ">", exp.dir);
       generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", "", "", xp.falso);
+      generarCodigo("goto", " ", " ", xp.falso);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1044,7 +1124,7 @@ factorReturn Factor(){
     //printf("%s\n",tA -> valor);
     auxID = tA.valor;
     tA = yylex();
-    boolReturn bul = Bool();
+    boolReturn bul = Bool(" "," ");
     if (eat(PDER)) {
       //printf("%s\n",tA -> valor);
       factor.tipo = bul.tipo;
@@ -1064,19 +1144,19 @@ factorReturn Factor(){
     //printf("%s\n",tA -> valor);
     auxID = tA.valor;
     factor.dir = "TRUE";
-    factor.tipo = 1;
+    factor.tipo = tA.tipo;/////////////////////////////////////////////////////////////CHECAR AQUI IBA UN "1"
     tA = yylex();
   } else if (eat(FALSE)) {
     //printf("%s\n",tA -> valor);
     factor.dir = "FALSE";
-    factor.tipo = 1;    
+    factor.tipo = tA.tipo;/////////////////////////////////////////////////////////////CHECAR AQUI IBA UN "1"    
     tA = yylex();
   } else if (eat(STR)) {
     //printf("FACTOR: %s\n",tA.valor);
     auxID = tA.valor;
     tablaCadenas.push(tA.valor);
     factor.dir = tablaCadenas.top();
-    factor.tipo = 6; //CADENA
+    factor.tipo = 4; //CADENA
     tA = yylex();
   }else{
     errorSintactico();
@@ -1137,11 +1217,11 @@ list<int> Parametros(){
 
 list<int> Lista_Param(){
   list<int> lista_param;
-  boolReturn bul = Bool();
+  boolReturn bul = Bool(" "," ");
   list<int> nuevaLista;
   nuevaLista.push_front(bul.tipo);
   lista_param = ListP(nuevaLista);
-  generarCodigo("PARAM", "", "", bul.dir);
+  generarCodigo("PARAM", " ", " ", bul.dir);
   return lista_param;
 }
 
@@ -1150,7 +1230,7 @@ list<int> ListP(list<int> listaH){
   if (eat(COMA)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    boolReturn bul = Bool();
+    boolReturn bul = Bool(" "," ");
     listaH.push_front(bul.tipo);
     listaS = ListP(listaH);
   } else {
@@ -1164,7 +1244,7 @@ localPReturn LocalP(string localPBase, int localPTipo, string direc){
   if (eat(CIZQ)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
-    boolReturn bul = Bool();
+    boolReturn bul = Bool(" "," ");
     int boolTipo = bul.tipo;
     if (eat(CDER)) {
       //printf("%s\n",tA -> valor);

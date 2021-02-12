@@ -11,15 +11,14 @@ func int suma(int a, int b) {
     int x;
     int y;
     int z;
-    double w;
+    float w;
+    double f;
     char aa;
-    float f;
     int[1] re;
     x = 2;
     y = 2;
-    w = 2.0;
-    aa = a;
-    f = 2.0;
+    w = 0.123;
+    f = 1.2;
 
     --Esto es un comentario.
 
@@ -32,7 +31,7 @@ func int suma(int a, int b) {
 }
 
 
-func int resta(int a, int b) {
+func void resta(int a, int b) {
     int x;
     int y;
     while(x >= y) {
@@ -40,4 +39,27 @@ func int resta(int a, int b) {
         y = a / b;
         x = a % b;
     }
+
+    switch(a){
+        case 1:
+            print awa;
+            break;
+        default:
+            return;
+    }
+
+    return;
+}
+
+func int testIf(void v){
+    int x;
+    int y;
+
+    if(x < y)  
+        print aguacate;
+    return 3;
+
+    do {
+        x = x + y;
+    } while(true)
 }

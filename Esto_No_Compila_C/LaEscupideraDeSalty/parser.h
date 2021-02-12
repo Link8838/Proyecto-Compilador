@@ -81,22 +81,22 @@ list<int> Lista_ArgsP(list<int> l);
 /**
  * Función para prueba y empate del No-terminal (Instrucciones)
  */
-void Instrucciones();
+string Instrucciones();
 
 /**
  * Función para prueba y empate del No-terminal (Sentencia)
  */
-void Sentencia();
+string Sentencia(string sentencia);
 
 /**
  * Función para prueba y empate del No-terminal (InstruccionesP)
  */
-void InstruccionesP();
+string InstruccionesP();
 
 /**
  * Función para prueba y empate del No-terminal (Sent)
  */
-void Sent();
+void Sent(list<string> listaI, string sig);
 
 /**
  * Función para prueba y empate del No-terminal (Ret)
@@ -111,12 +111,12 @@ piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia();
 /**
  * Función para prueba y empate del No-terminal (Bool)
  */
-boolReturn Bool();
+boolReturn Bool(string v, string f);
 
 /**
  * Función para prueba y empate del No-terminal (Casos)
  */
-void Casos();
+casosReturn Casos(string siguiente);
 
 /**
  * Función para prueba y empate del No-terminal (Exp)
@@ -126,12 +126,12 @@ expReturn Exp();
 /**
  * Función para prueba y empate del No-terminal (Caso)
  */
-void Caso();
+casoReturn Caso(string siguiente);
 
 /**
  * Función para prueba y empate del No-terminal (Predeterminado)
  */
-void Predeterminado();
+predeterminadoReturn Predeterminado(string siguiente);
 
 /**
  * Función para prueba y empate del No-terminal (Ptt)

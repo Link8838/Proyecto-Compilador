@@ -20,6 +20,46 @@ struct piernaIzquieraExodiaReturn{
     }
 };
 
+struct casosReturn{
+    string siguiente;
+    string prueba;
+
+    casosReturn(){}
+
+    casosReturn(string siguiente, string prueba){
+        this -> siguiente = siguiente;
+        this -> prueba = prueba;
+    }
+};
+
+struct casoReturn{
+    string inicio;
+    string prueba;
+    string siguiente;
+
+    casoReturn(){}
+
+    casoReturn(string inicio, string prueba, string siguiente){
+        this -> inicio = inicio;
+        this -> prueba = prueba;
+        this -> siguiente = siguiente;
+    }
+};
+
+struct predeterminadoReturn{
+    string inicio;
+    string prueba;
+    string siguiente;
+
+    predeterminadoReturn(){}
+
+    predeterminadoReturn(string inicio, string prueba, string siguiente){
+        this -> inicio = inicio;
+        this -> prueba = prueba;
+        this -> siguiente = siguiente;
+    }
+};
+
 struct pttReturn{
     string dir;
     int tipo;
@@ -36,12 +76,16 @@ struct pttReturn{
 
 struct boolReturn{
     string dir;
+    string verdadero = " ";
+    string falso;
     int tipo;
 
-    boolReturn(){}
+    boolPReturn(){}
 
-    boolReturn(string dir, int tipo){
+    boolPReturn(string dir,string verdadero, string falso, int tipo){
         this -> dir = dir;
+        this -> verdadero = verdadero;
+        this -> falso = falso;
         this -> tipo = tipo;
     }
 };

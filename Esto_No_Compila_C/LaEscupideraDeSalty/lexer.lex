@@ -51,6 +51,7 @@ comeMul "<*"[^"*>"]*"*>"
 "return" { ECHO; return token.crea_token(RETURN, yytext,-1);}
 "print" { ECHO; return token.crea_token(PRINT, yytext,-1);}
 "scan" { ECHO; return token.crea_token(SCAN, yytext,-1);}
+"do" { ECHO; return token.crea_token(DO, yytext,-1);}
 ":" { ECHO; return token.crea_token(DOSPUNTOS, yytext,-1);}
 "||" { ECHO; return token.crea_token(OR, yytext,-1);}
 "&&" { ECHO; return token.crea_token(AND, yytext,-1);}
@@ -73,7 +74,7 @@ comeMul "<*"[^"*>"]*"*>"
 "[" { ECHO; return token.crea_token(CIZQ, yytext,-1);}
 "]" { ECHO; return token.crea_token(CDER, yytext,-1);}
 {num_ent} { ECHO; return token.crea_token(NUM, yytext, 1); }
-{num_float} { ECHO; return token.crea_token(NUM, yytext, 3); }
+{num_float} { ECHO; return token.crea_token(NUM, yytext, 2); }
 {num_double} { ECHO; return token.crea_token(NUM, yytext, 2); }
 {comeUn} { ECHO;}
 {comeMul} { ECHO;}
