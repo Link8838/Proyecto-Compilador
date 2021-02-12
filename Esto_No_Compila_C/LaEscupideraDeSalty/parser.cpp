@@ -13,6 +13,7 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include "parser.h"
 
 //Programar a parte las funciones auxiliares
@@ -52,10 +53,11 @@ int eat(int clase){
   return f;
 }
 
-void parse(Token tk) {
+void parse(Token tk, string name) {
   tA = tk;
   construirTablaTipos();
   Programa();
+  escribirCodigo(obtenerCodigo(), name);
   //printf("\nDIRECCION: %i\n", dir);
 }
 
@@ -1357,7 +1359,7 @@ void generarCodigo(string opcion, string arg1,  string arg2, string res){
   lineaCodigo.push_back(arg1);
   lineaCodigo.push_back(arg2);
   lineaCodigo.push_back(res);
-  codigo.push_front(lineaCodigo);
+  codigo.push_back(lineaCodigo);
 }
 
 string nuevaEtiqueta(){
@@ -1466,6 +1468,41 @@ int equivalentes(int tipoH, int unarioH){
   } else {
     return 0;
   }
+}
+
+void escribirCodigo(string codigo, string name){
+  ofstream archivo;
+  string nombre;
+
+  int len = name.length();
+  nombre = name.substr(0,len-3);
+
+  nombre = nombre + ".ci";
+  archivo.open(nombre);
+
+  if(archivo.fail()){
+    printf("ERROR: No se pudo abrir el archivo.\n");
+  }
+
+  archivo<<codigo;
+  archivo.close();
+}
+
+string obtenerCodigo(){
+  string codigoIn;
+  string wl = "__";
+  string spc = " ";
+  for(vector<string> v : codigo){
+    for(int i = 0;  i<4; i++){
+      if(strcmp(v.at(i).c_str(), spc.c_str()) == 0){
+        codigoIn += " " + wl;
+      } else {
+        codigoIn += " " + v.at(i);
+      }
+    }
+    codigoIn += "\n";
+  }
+  return codigoIn;
 }
 
 //int main(){return 0;}

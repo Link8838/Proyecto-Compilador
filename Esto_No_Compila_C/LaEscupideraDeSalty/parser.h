@@ -238,7 +238,7 @@ int eat(int clase);
  * Debe llamar a función de símbolo inicial de la gramática.
  * También inicializar las tablas de símbolos y tipos.
  */
-void parse(Token t);
+void parse(Token t, string name);
 
 /**
  * Función que inicializa la tabla de tipos.
@@ -299,22 +299,59 @@ string nuevaEtiqueta();
  */
 string nuevoIndice();
 
+/**
+ * Función que
+ */
 string nuevaTemporal();
 
+/**
+ * Función que
+ */
 int getTipoTS(string id);
 
+/**
+ * Función que
+ */
 int getNombre(int tipoTemp, string strTipo);
 
+/**
+ * Función que
+ */
 int getTamTT(int tipo);
 
+/**
+ * Función que
+ */
 list<Simbolo> fondo(stack<list<Simbolo>> ts);
 
+/**
+ * Función que
+ */
 int getVarPTSFondo(string id);
 
+/**
+ * Función que
+ */
 list<int> getVarListPTSFondo(string id);
 
+/**
+ * Función que
+ */
 int equivalenteListas(list<int> uno, list<int> dos);
 
+/**
+ * Función que
+ */
 int equivalentes(int tipoH, int unarioH);
+
+/**
+ *
+ */
+void escribirCodigo(string codigo, string name);
+
+/**
+ *
+ */
+string obtenerCodigo();
 
 #endif
