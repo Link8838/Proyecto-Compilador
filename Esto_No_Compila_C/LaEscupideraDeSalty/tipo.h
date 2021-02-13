@@ -28,6 +28,13 @@ struct TipTipe {
       return TipTipe(id, tipo, tam, elem, tipoBase);
     }
 
+    string printTipo(){
+        string simb;        
+        string spc = " ";
+        simb += to_string(id) + spc + tipo + to_string(tam) + to_string(elem) + spc + to_string(tipoBase);
+        return simb;
+    }
+
 };
 
 #endif

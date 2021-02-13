@@ -58,6 +58,10 @@ void parse(Token tk, string name) {
   construirTablaTipos();
   Programa();
   escribirCodigo(obtenerCodigo(), name);
+  string tablas = verTablasSimbolos();
+  string tablass = verTablasTipos();
+  printf("\n**TABLA DE SIMBOLOS**\n%s", tablas.c_str());
+  printf("\n**TABLA DE TIPOS**\n%s", tablass.c_str());
   //printf("\nDIRECCION: %i\n", dir);
 }
 
@@ -67,6 +71,9 @@ void Programa(){
   dir = 0;
   Declaraciones();  
   Funciones();
+  if(!eat(FIN)){
+    errorSintactico();
+  }
 }
 
 void Declaraciones(){
@@ -101,7 +108,7 @@ void Lista_Var(int lista_varTipoH){
       list<int> arrgs;
       //printf(" INSERTAR: %s %i\n", tA.valor.c_str(), lista_varTipoH);
       insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
-      dir += pilaTablaTipos.top().front().tam;
+      dir += getTamTT(lista_varTipoH);
     } else {
       errorSemantico("El ID ya fue declarado:", linea, tA.valor);
     }
@@ -186,7 +193,7 @@ void Lop(int lista_varTipoH){
             if(!buscarIDTS(tA.valor)){
               list<int> arrgs;
               insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
-              dir += pilaTablaTipos.top().front().tam;
+              dir += getTamTT(lista_varTipoH);
             } else {
               errorSemantico("El ID ya fue declarado:", linea, tA.valor);
             }
@@ -227,8 +234,8 @@ void Funciones(){
                   tA = yylex();
                   Bloque();
                   pilaTablaSimbolos.pop();
-                  pilaTablaTipos.pop();  
-//                listaRetorno.push_front(0);
+                  pilaTablaTipos.pop(); 
+                  pilaDir.pop(); 
                   if(!buscarIDTS(idAux)){
                     //printf("BUSCAR ID FUNC\n");
                     if(tipoTipo != 0 && listaRetorno.size() <= 0){
@@ -293,7 +300,7 @@ list<int> Lista_Args(){
     if(!buscarIDTS(tA.valor)){
       list<int> arrgs;
       insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
-      dir += pilaTablaTipos.top().front().tam;
+      dir += getTamTT(tipoTipo);
     } else {
       errorSemantico("El ID ya fue declarado:", linea, tA.valor);
     }
@@ -320,7 +327,7 @@ list<int> Lista_ArgsP(list<int> lista_argsPListaH){
       if(!buscarIDTS(tA.valor)){
         list<int> arrgs;
         insertarSimbolo(tA.valor, dir, tipoTipo, 1, arrgs);//QUIZÁ NO ES 0
-        dir += pilaTablaTipos.top().front().tam;
+        dir += getTamTT(tipoTipo);
       } else {
         errorSemantico("El ID ya fue declarado:", linea, tA.valor);
       }      
@@ -339,7 +346,7 @@ string Instrucciones(){
   if(eat(IF)||eat(RETURN)||eat(ID)||eat(WHILE)||eat(DO)||eat(BREAK)||eat(LLAIZQ)||eat(SWITCH)||eat(PRINT)||eat(SCAN)){
     string sentencia = nuevaEtiqueta();
     string sigRR = Sentencia(sentencia);
-    generarCodigo(sigR," "," "," ");
+    generarCodigo(sigRR," "," "," ");
     sigR = InstruccionesP();
   } else {
     errorSintactico();
@@ -386,7 +393,7 @@ string Sentencia(string siguiente){
         tA = yylex();
         if(equivalentes(piE.tipo, bulPI.tipo)){
           //Reducir;
-          generarCodigo(piE.dir,"="," ", bulPI.dir);
+          generarCodigo("=", piE.dir, " ", bulPI.dir);
         } else {
           errorSemantico("Tipos incompatiblesss: ", auxlinea, auxID);
         }
@@ -406,12 +413,13 @@ string Sentencia(string siguiente){
       string boolFls = siguiente;
       generarCodigo(siguiente," ", " ", " ");
       boolReturn bulw = Bool(boolVddr, boolFls);
-      generarCodigo(bulw.verdadero," ", " ", " ");
+      generarCodigo(bulw.dir," ", " ", " ");
       if (eat(PDER)) {
         //printf("%s\n",tA -> valor);
-        tA = yylex();
-        string sigw = siguiente = nuevaEtiqueta();
-        Sentencia(siguiente);
+        tA = yylex();        
+        siguiente = nuevaEtiqueta();
+        string sigw;
+        sigw = Sentencia(siguiente);
         generarCodigo("goto"," "," ", sigw);
       }else{
         errorSintactico();
@@ -462,7 +470,7 @@ string Sentencia(string siguiente){
     if (eat(PIZQ)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
-      Bool(" "," ");
+      boolReturn bul = Bool(" "," ");
       if (eat(PDER)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
@@ -470,9 +478,9 @@ string Sentencia(string siguiente){
           //printf("%s\n",tA -> valor);
           tA = yylex();
           casosReturn casos = Casos(siguiente);
-          generarCodigo("goto"," ", " ",casos.prueba);
-          generarCodigo(casos.prueba," ", " ", " ");
-          generarCodigo(casos.prueba, " ", " ", " ");
+          generarCodigo("goto"," ", " ", bul.dir);
+          generarCodigo(bul.dir," ", " ", " ");
+          //generarCodigo(casos.prueba, " ", " ", " ");
           if (eat(LLADER)) {
             //printf("%s\n",tA -> valor);
             tA = yylex();
@@ -495,7 +503,7 @@ string Sentencia(string siguiente){
     if (eat(PCOMA)) {
         //printf("%s\n",tA -> valor);
         tA = yylex();
-        generarCodigo("print"," ", " ", exp.dir);
+        generarCodigo("print",exp.dir," ", " ");
     }else{
       errorSintactico();
     }
@@ -504,13 +512,14 @@ string Sentencia(string siguiente){
       tA = yylex();
       if (eat(ID)) {
         piernaIzquieraExodiaReturn piES = Pierna_Izquierda_Exodia();
-        generarCodigo("scan", " ", " ", piES.dir);
+        generarCodigo("scan", piES.dir," ", " ");
       } else {
         errorSintactico();        
       }
   }else{
     errorSintactico();
   }
+  //printf("SIG%s\n", siguiente.c_str());
   return siguiente;
 }
 
@@ -543,7 +552,7 @@ void Ret(){
   if(eat(NEGA)||eat(MENOS)||eat(ID)||eat(PIZQ)||eat(NUM)||eat(STR)||eat(TRUE)||eat(FALSE)){
     expReturn exp = Exp();
     listaRetorno.push_front(exp.tipo);
-    generarCodigo("return"," "," ",exp.dir);
+    generarCodigo("return", " ", " ", exp.dir);
     if (eat(PCOMA)) {
       //printf("%s\n",tA -> valor);
       tA = yylex();
@@ -553,7 +562,7 @@ void Ret(){
   } else if (eat(PCOMA)) {
     //printf("%s\n",tA -> valor);
     listaRetorno.push_front(0);
-    generarCodigo("return"," "," "," ");
+    generarCodigo("return"," "," ","void");
     tA = yylex();
   }else{
     errorSintactico();
@@ -587,20 +596,20 @@ boolReturn Bool(string v, string f){
     string boolVddr = v;
     string boolFls = f;
     if(strcmp(v.c_str(), " ") == 0 && strcmp(f.c_str(), " ") == 0){
-      boolVddr = nuevoIndice();
-      boolFls = nuevoIndice();
+      boolVddr = nuevoIndice();      
       //printf(" BOOL ");
     }
+    boolFls = nuevoIndice();
     combReturn comb = Comb(boolVddr, boolFls);
     list<string> listaIndices;
     listaIndices.push_front(boolFls);
     boolPReturn boopAux;
     boopAux.listaIndices = listaIndices;
-    boopAux.dir = comb.dir;
+    boopAux.dir = comb.dir;    
     boopAux.tipo = comb.tipo;
     boolPReturn boolp = BoolP(boopAux);
     bul.tipo = boolp.tipo;
-    bul.dir = boolp.dir;
+    bul.dir = comb.dir;    
     generarCodigo(boolFls," ", " "," ");
   } else {
     errorSintactico();
@@ -730,7 +739,7 @@ localizationReturn Localization(string localizationBase){
             localP.tipo = pilaTablaTipos.top().front().tipoBase;
             localP.dir = nuevaTemporal();            
             localP.tam = getTamTT(tipoTemp);
-            generarCodigo(localP.dir, "=", "bool.dir *", to_string(localP.tam));
+            generarCodigo("*", bul.dir, to_string(localP.tam),  localP.dir);
             localization.dir = localP.dir;
             localization.tipo = localP.tipo;
           } else {
@@ -768,7 +777,7 @@ combReturn Comb(string vddr, string fls){
     combPReturn combp = CombP(combPP);
     comb.tipo = combp.tipo;
     comb.dir = combp.dir;
-    generarCodigo(igualdad.verdadero, " ", " ", " ");
+    generarCodigo(comb.dir, " ", " ", " ");
   } else {
     errorSintactico();
   }
@@ -845,8 +854,8 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
       int tipoTemp = max(tipoH, rel.tipo);
       //int d1;
       //int d2;
-      generarCodigo(igup.dir, "=", "==", igup.dir);
-      generarCodigo("if", direc, "goto", rel.verdadero);
+      generarCodigo("==", igup.dir, igup.dir, " ");
+      generarCodigo("if", direc, " ", rel.verdadero);
       generarCodigo("goto", " ", " ", rel.falso);
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
@@ -863,8 +872,8 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
       int tipoTemp = max(tipoH, rel.tipo);
       //int d1;
       //int d2;      
-      generarCodigo(igup.dir, "=", "!=", igup.dir);
-      generarCodigo("if", direc, "goto", rel.verdadero);
+      generarCodigo("!=", igup.dir, igup.dir, " ");
+      generarCodigo("if", direc, " ", rel.verdadero);
       generarCodigo("goto", " ", " ", rel.falso);
     } else {
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
@@ -917,9 +926,9 @@ xpReturn Xp(string v, string f, int tipo){
       xp.dir = nuevaTemporal();
       int d1 = max(xp.tipo, exp.tipo);
       int d2 = max(xp.tipo, exp.tipo);
-      generarCodigo(xp.dir+"=", xp.dir, "<", exp.dir);
-      generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", " ", " ", xp.falso);
+      generarCodigo("<", xp.dir, xp.dir, exp.dir);
+      generarCodigo("if", xp.dir, " ", xp.verdadero);
+      generarCodigo("goto", " ", " ", xp.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -932,9 +941,9 @@ xpReturn Xp(string v, string f, int tipo){
       xp.dir = nuevaTemporal();
       int d1 = max(xp.tipo, exp.tipo);
       int d2 = max(xp.tipo, exp.tipo);
-      generarCodigo(xp.dir+"=", xp.dir, "<=", exp.dir);
-      generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", " ", " ", xp.falso);
+      generarCodigo("<=", xp.dir, xp.dir, exp.dir);
+      generarCodigo("if", xp.dir, " ", xp.verdadero);
+      generarCodigo("goto", " ", " ", xp.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -947,9 +956,9 @@ xpReturn Xp(string v, string f, int tipo){
       xp.dir = nuevaTemporal();
       int d1 = max(xp.tipo, exp.tipo);
       int d2 = max(xp.tipo, exp.tipo);
-      generarCodigo(xp.dir+"=", xp.dir, ">=", exp.dir);
-      generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", " ", " ", xp.falso);
+      generarCodigo(">=", xp.dir, xp.dir, exp.dir);
+      generarCodigo("if", xp.dir, " ", xp.verdadero);
+      generarCodigo("goto", " ", " ", xp.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -962,9 +971,9 @@ xpReturn Xp(string v, string f, int tipo){
       xp.dir = nuevaTemporal();
       int d1 = max(xp.tipo, exp.tipo);
       int d2 = max(xp.tipo, exp.tipo);
-      generarCodigo(xp.dir+"=", xp.dir, ">", exp.dir);
-      generarCodigo("if", xp.dir, "goto", xp.verdadero);
-      generarCodigo("goto", " ", " ", xp.falso);
+      generarCodigo(">", xp.dir, xp.dir, exp.dir);
+      generarCodigo("if", xp.dir, " ", xp.verdadero);
+      generarCodigo("goto", " ", " ", xp.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -972,6 +981,7 @@ xpReturn Xp(string v, string f, int tipo){
     xp.tipo = tipo;
     xp.verdadero = v;
     xp.falso = f;
+    xp.dir = v;
   }
   return xp;
 }
@@ -1002,7 +1012,7 @@ exReturn Ex(int tipe, string dire){
       ex.dir = nuevaTemporal();
       int d1 = max(tipe, term.tipo);
       int d2 = max(ex.tipo, term.tipo);
-      generarCodigo(ex.dir + "=", to_string(d1), "+", to_string(d2));
+      generarCodigo("+", to_string(d1), to_string(d2), ex.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1017,7 +1027,7 @@ exReturn Ex(int tipe, string dire){
       ex.dir = nuevaTemporal();
       int d1 = max(tipe, term.tipo);
       int d2 = max(ex.tipo, term.tipo);
-      generarCodigo(ex.dir + "=", to_string(d1), "-", to_string(d2));
+      generarCodigo("-", to_string(d1), to_string(d2), ex.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1037,14 +1047,14 @@ unarioReturn Unario(){
     unarioReturn unaAux = Unario();
     unario.dir = nuevaTemporal();
     unario.tipo = unaAux.tipo;
-    generarCodigo(unario.dir, "=", "!", unaAux.dir);
+    generarCodigo("!", unaAux.dir, " ", unario.dir);
   } else if (eat(MENOS)) {
     //printf("%s\n",tA -> valor);
     tA = yylex();
     unarioReturn unaAux = Unario();
     unario.dir = nuevaTemporal();
     unario.tipo = unaAux.tipo;
-    generarCodigo(unario.dir, "=", "-", unaAux.dir);
+    generarCodigo("-", unaAux.dir, " ", unario.dir);
   } else if (eat(ID) || eat(NUM) || eat(PIZQ) || eat(STR) || eat(TRUE) || eat(FALSE)) {
     factorReturn factor = Factor();
     unario.tipo = factor.tipo;
@@ -1068,7 +1078,7 @@ terPReturn TerP(int tipe, string dire){
       terp.dir = nuevaTemporal();
       int d1 = max(tipe, unario.tipo);
       int d2 = max(terp.tipo, unario.tipo);
-      generarCodigo(to_string(d1) + "=", to_string(terp.tipo), "*", to_string(d2));
+      generarCodigo("*", to_string(d1), to_string(terp.tipo), unario.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1083,7 +1093,7 @@ terPReturn TerP(int tipe, string dire){
       terp.dir = nuevaTemporal();
       int d1 = max(tipe, unario.tipo);
       int d2 = max(terp.tipo, unario.tipo);
-      generarCodigo(to_string(d1) + "=", to_string(terp.tipo), "/", to_string(d2));
+      generarCodigo("/", to_string(d1), to_string(terp.tipo), unario.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1097,7 +1107,7 @@ terPReturn TerP(int tipe, string dire){
       terp.dir = nuevaTemporal();
       int d1 = max(tipe, unario.tipo);
       int d2 = max(terp.tipo, unario.tipo);
-      generarCodigo(to_string(d1) + "=", to_string(terp.tipo), "%", to_string(d2));
+      generarCodigo("%", to_string(d1), to_string(terp.tipo), unario.dir);
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
@@ -1139,7 +1149,7 @@ factorReturn Factor(){
     //printf("%s\n",tA -> valor);
     factor.tipo = tA.tipo;
     //printf("NUM: %s %i\n", tA.valor.c_str(), factor.tipo);
-    factor.dir = atoi(tA.valor.c_str());
+    factor.dir = tA.valor.c_str();
     auxID = tA.valor;
     tA = yylex();
   } else if (eat(TRUE)) {
@@ -1490,19 +1500,48 @@ void escribirCodigo(string codigo, string name){
 
 string obtenerCodigo(){
   string codigoIn;
-  string wl = "__";
+  string wl = "...        ";
   string spc = " ";
   for(vector<string> v : codigo){
     for(int i = 0;  i<4; i++){
       if(strcmp(v.at(i).c_str(), spc.c_str()) == 0){
-        codigoIn += " " + wl;
+        codigoIn += wl;
       } else {
-        codigoIn += " " + v.at(i);
+        codigoIn += v.at(i);
+        int len = v.at(i).length();
+        int res = 11 - len;
+        for(int i = 0; i<res; i++){
+          codigoIn += spc;
+        }        
       }
     }
     codigoIn += "\n";
   }
   return codigoIn;
+}
+
+string verTablasSimbolos(){
+  string tabla = "   ID     Dir       Tipo        Var       Argumentos\n";
+  while(!pilaTablaSimbolos.empty()){
+    for(Simbolo s : pilaTablaSimbolos.top()){
+        tabla += s.printSimbolo();
+        tabla += "\n";      
+    }
+    pilaTablaSimbolos.pop();
+  }
+  return tabla;
+}
+
+string verTablasTipos(){
+  string tabla = "   ID     Dir       Tipo        Var       Argumentos\n";
+  while(!pilaTablaTipos.empty()){
+    for(TipTipe t : pilaTablaTipos.top()){
+        tabla += t.printTipo();
+        tabla += "\n";      
+    }
+    pilaTablaTipos.pop();
+  }
+  return tabla;
 }
 
 //int main(){return 0;}

@@ -16,7 +16,7 @@ func int suma(int a, int b) {
     char aa;
     int[1] re;
     x = 2;
-    y = 2;
+    y = 2 * 2;
     w = 0.123;
     f = 1.2;
 

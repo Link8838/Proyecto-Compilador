@@ -2,5 +2,7 @@
     de prueba           *>
 
 func void hola(void d){
-	return;
+    while(true){
+        print aguacate;
+    }
 }

@@ -5,8 +5,8 @@
 using namespace std;
 
 struct piernaIzquieraExodiaReturn{
-    string dir;
-    string id;
+    string dir = " ";
+    string id = " ";
     int tipo;
     int arreglo;
 
@@ -21,8 +21,8 @@ struct piernaIzquieraExodiaReturn{
 };
 
 struct casosReturn{
-    string siguiente;
-    string prueba;
+    string siguiente = " ";
+    string prueba = " ";
 
     casosReturn(){}
 
@@ -33,9 +33,9 @@ struct casosReturn{
 };
 
 struct casoReturn{
-    string inicio;
-    string prueba;
-    string siguiente;
+    string inicio = " ";
+    string prueba = " ";
+    string siguiente = " ";
 
     casoReturn(){}
 
@@ -47,9 +47,9 @@ struct casoReturn{
 };
 
 struct predeterminadoReturn{
-    string inicio;
-    string prueba;
-    string siguiente;
+    string inicio = " ";
+    string prueba = " ";
+    string siguiente = " ";
 
     predeterminadoReturn(){}
 
@@ -61,7 +61,7 @@ struct predeterminadoReturn{
 };
 
 struct pttReturn{
-    string dir;
+    string dir = " ";
     int tipo;
     int arreglo;
 
@@ -75,9 +75,9 @@ struct pttReturn{
 };
 
 struct boolReturn{
-    string dir;
+    string dir = " ";
     string verdadero = " ";
-    string falso;
+    string falso = " ";
     int tipo;
 
     boolPReturn(){}
@@ -91,9 +91,9 @@ struct boolReturn{
 };
 
 struct boolPReturn{
-    string dir;
-    string verdadero;
-    string falso;
+    string dir = " ";
+    string verdadero = " ";
+    string falso = " ";
     int tipo;
     list<string> listaIndices;
 
@@ -109,7 +109,7 @@ struct boolPReturn{
 };
 
 struct combReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     combReturn(){}
@@ -121,7 +121,7 @@ struct combReturn{
 };
 
 struct combPReturn{
-    string dir;
+    string dir = " ";
     int tipo;
     list<string> listaIndices;
 
@@ -135,8 +135,8 @@ struct combPReturn{
 };
 
 struct igualdadReturn{
-    string dir;
-    string verdadero;
+    string dir = " ";
+    string verdadero = " ";
     int tipo;
 
     igualdadReturn(){}
@@ -149,9 +149,9 @@ struct igualdadReturn{
 };
 
 struct iguPReturn{
-    string verdadero;
-    string falso;
-    string dir;
+    string verdadero = " ";
+    string falso = " ";
+    string dir = " ";
     int tipo;
 
     iguPReturn(){}
@@ -165,9 +165,9 @@ struct iguPReturn{
 };
 
 struct relReturn{
-    string verdadero;
-    string falso;
-    string dir;
+    string verdadero = " ";
+    string falso = " ";
+    string dir = " ";
     int tipo;
 
     relReturn(){}
@@ -181,9 +181,9 @@ struct relReturn{
 };
 
 struct xpReturn{
-    string verdadero;
-    string falso;
-    string dir;
+    string verdadero = " ";
+    string falso = " ";
+    string dir = " ";
     int tipo;
 
     xpReturn(){}
@@ -197,7 +197,7 @@ struct xpReturn{
 };
 
 struct expReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     expReturn(){}
@@ -209,7 +209,7 @@ struct expReturn{
 };
 
 struct exReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     exReturn(){}
@@ -221,7 +221,7 @@ struct exReturn{
 };
 
 struct termReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     termReturn(){}
@@ -233,7 +233,7 @@ struct termReturn{
 };
 
 struct terPReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     terPReturn(){}
@@ -245,7 +245,7 @@ struct terPReturn{
 };
 
 struct unarioReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     unarioReturn(){}
@@ -257,7 +257,7 @@ struct unarioReturn{
 };
 
 struct factorReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     factorReturn(){}
@@ -269,7 +269,7 @@ struct factorReturn{
 };
 
 struct faaccReturn{
-    string dir;
+    string dir = " ";
     int tipo;
 
     faaccReturn(){}
@@ -281,7 +281,7 @@ struct faaccReturn{
 };
 
 struct localizationReturn{
-    string dir;
+    string dir = " ";
     int tipo;
     int tam;        
 
@@ -295,7 +295,7 @@ struct localizationReturn{
 };
 
 struct localPReturn{
-    string dir;
+    string dir = " ";
     int tipo;
     int tam;
 

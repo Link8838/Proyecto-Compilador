@@ -354,4 +354,8 @@ void escribirCodigo(string codigo, string name);
  */
 string obtenerCodigo();
 
+string verTablasSimbolos();
+
+string verTablasTipos();
+
 #endif
