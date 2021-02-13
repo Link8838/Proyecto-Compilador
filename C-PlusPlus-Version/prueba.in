@@ -7,7 +7,7 @@ float c;
 char d;
 void v;
 
-func int suma(int a, int b) {
+func int suma(int a, int b, double c, char e) {
     int x;
     int y;
     int z;

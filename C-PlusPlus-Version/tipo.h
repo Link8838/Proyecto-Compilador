@@ -29,9 +29,30 @@ struct TipTipe {
     }
 
     string printTipo(){
-        string simb;        
+        string simb = "         ";        
         string spc = " ";
-        simb += to_string(id) + spc + tipo + to_string(tam) + to_string(elem) + spc + to_string(tipoBase);
+        int res;
+        simb += to_string(id);
+        res = 7 - to_string(id).length();
+        for(int i = 0; i<res; i++){
+          simb += spc;
+        }
+        simb += tipo;
+        res = 12 - tipo.length();
+        for(int i = 0; i<res; i++){
+          simb += spc;
+        }
+        simb += to_string(tam);
+        res = 11 - to_string(tam).length();
+        for(int i = 0; i<res; i++){
+          simb += spc;
+        }
+        simb += to_string(elem);
+        res = 13 - to_string(elem).length();
+        for(int i = 0; i<res; i++){
+          simb += spc;
+        }
+        simb += to_string(tipoBase);
         return simb;
     }
 

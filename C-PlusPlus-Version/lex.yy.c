@@ -1008,19 +1008,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 85 "lexer.lex"
-{ puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
+{ puts("\n\n====================================================================\n>Fin de analisis Lexico."); 
+return token.crea_token(FIN, "",-1); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 86 "lexer.lex"
+#line 87 "lexer.lex"
 { printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 88 "lexer.lex"
+#line 89 "lexer.lex"
 ECHO;
 	YY_BREAK
-#line 1024 "lex.yy.c"
+#line 1025 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1902,5 +1903,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 88 "lexer.lex"
+#line 89 "lexer.lex"
 

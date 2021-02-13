@@ -82,7 +82,8 @@ comeMul "<*"[^"*>"]*"*>"
 {str} { ECHO; return token.crea_token(STR, yytext,-1); }
 {whitespace} { ECHO; }
 
-<<EOF>> { puts("\n>Fin de analisis Lexico."); return token.crea_token(FIN, "",-1); }
+<<EOF>> { puts("\n\n====================================================================\n>Fin de analisis Lexico."); 
+return token.crea_token(FIN, "",-1); }
 . { printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
 
 %%

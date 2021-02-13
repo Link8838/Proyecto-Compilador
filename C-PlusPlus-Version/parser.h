@@ -238,7 +238,7 @@ int eat(int clase);
  * Debe llamar a función de símbolo inicial de la gramática.
  * También inicializar las tablas de símbolos y tipos.
  */
-void parse(Token t, string name);
+void parse(Token t, string name, string flag);
 
 /**
  * Función que inicializa la tabla de tipos.
@@ -357,5 +357,7 @@ string obtenerCodigo();
 string verTablasSimbolos();
 
 string verTablasTipos();
+
+void mostrarTablas(string flag);
 
 #endif

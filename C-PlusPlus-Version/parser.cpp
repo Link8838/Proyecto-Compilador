@@ -23,6 +23,7 @@ extern int yylineno;
 
 int auxlinea = 0;
 string auxID = " ";
+string marco = "====================================================================";
 
 int dir = -1;
 int iE = 0;
@@ -53,15 +54,12 @@ int eat(int clase){
   return f;
 }
 
-void parse(Token tk, string name) {
+void parse(Token tk, string name, string flag) {
   tA = tk;
   construirTablaTipos();
   Programa();
   escribirCodigo(obtenerCodigo(), name);
-  string tablas = verTablasSimbolos();
-  string tablass = verTablasTipos();
-  printf("\n**TABLA DE SIMBOLOS**\n%s", tablas.c_str());
-  printf("\n**TABLA DE TIPOS**\n%s", tablass.c_str());
+  mostrarTablas(flag);
   //printf("\nDIRECCION: %i\n", dir);
 }
 
@@ -262,7 +260,7 @@ void Funciones(){
         errorSintactico();
       }
   } else if(eat(FIN)){
-    printf(">Fin del analisis Sintantico\n>Fin del analisis Semantico\n  **COMPILADO EXITOSO**\n");
+    printf(">Fin del analisis Sintantico\n>Fin del analisis Semantico\n%s\n                       **COMPILADO EXITOSO**\n%s\n", marco.c_str(), marco.c_str());
   }
 }
 
@@ -1305,12 +1303,12 @@ void construirTablaTipos(){
   struct TipTipe tipoI = tipoV.crea_tipo(1,"INT",4,-1,-1);
   struct TipTipe tipoD = tipoV.crea_tipo(2,"DOUBLE",8,-1,-1);
   struct TipTipe tipoF = tipoV.crea_tipo(3,"FLOAT",4,-1,-1);
-  struct TipTipe tipoC = tipoV.crea_tipo(4,"CHAR",4,-1,-1);
-  tablaTipos.push_front(tipoV);
-  tablaTipos.push_front(tipoI);
-  tablaTipos.push_front(tipoD);
-  tablaTipos.push_front(tipoF);
-  tablaTipos.push_front(tipoC);
+  struct TipTipe tipoC = tipoV.crea_tipo(4,"CHAR",1,-1,-1);
+  tablaTipos.push_back(tipoV);
+  tablaTipos.push_back(tipoI);
+  tablaTipos.push_back(tipoD);
+  tablaTipos.push_back(tipoF);
+  tablaTipos.push_back(tipoC);
   //printf("A ver si jala: %s\n", tipoV.tipo.c_str());
 }
 
@@ -1521,7 +1519,11 @@ string obtenerCodigo(){
 }
 
 string verTablasSimbolos(){
-  string tabla = "   ID     Dir       Tipo        Var       Argumentos\n";
+  string tabla = "                       **TABLA DE SIMBOLOS**\n";
+  tabla += marco.c_str();
+  string cabecera = "\n           ID        Dir    Tipo    Var       Argumentos\n";
+  tabla += cabecera;
+
   while(!pilaTablaSimbolos.empty()){
     for(Simbolo s : pilaTablaSimbolos.top()){
         tabla += s.printSimbolo();
@@ -1533,7 +1535,11 @@ string verTablasSimbolos(){
 }
 
 string verTablasTipos(){
-  string tabla = "   ID     Dir       Tipo        Var       Argumentos\n";
+  string tabla = "                       **TABLA DE TIPOS**\n";
+  tabla += marco.c_str();
+  string cabecera = "\n         ID     Tipo       Tam        Elem       Tipo Base\n";
+  tabla += cabecera;
+
   while(!pilaTablaTipos.empty()){
     for(TipTipe t : pilaTablaTipos.top()){
         tabla += t.printTipo();
@@ -1542,6 +1548,15 @@ string verTablasTipos(){
     pilaTablaTipos.pop();
   }
   return tabla;
+}
+
+void mostrarTablas(string flag){
+  if(strcmp(flag.c_str(), "-t") == 0){
+    string tablas = verTablasSimbolos();
+    string tablass = verTablasTipos();
+    printf("\n%s\n%s\n%s\n", marco.c_str(), tablas.c_str(), marco.c_str());
+    printf("\n%s\n%s\n%s\n", marco.c_str(), tablass.c_str(), marco.c_str());
+  } 
 }
 
 //int main(){return 0;}
