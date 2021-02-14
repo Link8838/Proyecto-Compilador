@@ -1,6 +1,6 @@
-# Proyecto Final Compilador
+# Proyecto Final: Compilador
 
-_Un pequeño compilador para un lenguaje específico elaboradp en C++_
+_Un pequeño compilador para un lenguaje específico elaborado en C++_
 
 ## Pre-requisitos 📋
 
@@ -13,7 +13,7 @@ _Esto generará el ejecutable `ulises++`._
 
 ### Para usar 🔧
 
-_Una vez generado el ejecutable del compilador se podrá usar escribiendo el nombre del ejecutable seguir de un archivo que se desee compilar._
+_Una vez generado el ejecutable del compilador se podrá usar escribiendo el nombre del ejecutable seguido de un archivo que se desee compilar._
 
 ```
 > ulises++ Pruebas.in 
@@ -29,15 +29,15 @@ _El archivo de salida con el código intermedio llevará el mismo nombre que el 
 
 ## Ejecutando pruebas ⚙️
 
-_Se incluyen archivos con el nombre **prueba** para revizar casos específicos._
+_Se incluyen archivos con el nombre **prueba** para revisar casos específicos._
 
 
 ## Autores ✒️
 
- * Figueroa Sandoval Gerardo Emiliano *
- * Hernández Ferreiro Enrique Ehecatl *
- * López Soto Ramses Antonio *
- * Quintero Villeda Erik *
+ * Figueroa Sandoval Gerardo Emiliano 
+ * Hernández Ferreiro Enrique Ehecatl 
+ * López Soto Ramses Antonio 
+ * Quintero Villeda Erik 
  
 ---
 Compiladores 7006, Facultad de Ciencias, UNAM
