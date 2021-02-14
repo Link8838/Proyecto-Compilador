@@ -1,6 +1,6 @@
 %{
-  /**
- * Práctica 7: Compiladores
+/**
+ * Proyecto Final: Compiladores
  * Figueroa Sandoval Gerardo Emiliano
  * Hernández Ferreiro Enrique Ehecatl
  * López Soto Ramses Antonio
@@ -13,7 +13,6 @@
   struct Token token;
 
 %}
-
 
 %option noyywrap
 %option yylineno

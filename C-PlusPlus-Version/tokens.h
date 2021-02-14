@@ -1,5 +1,5 @@
 /**
- * Práctica 7: Compiladores
+ * Proyecto Final: Compiladores
  * Figueroa Sandoval Gerardo Emiliano
  * Hernández Ferreiro Enrique Ehecatl
  * López Soto Ramses Antonio
@@ -15,31 +15,37 @@ using namespace std;
  * Estructura para modelar tokens (componentes léxicos)
  */
 struct Token {
-  int clase; //léxica
-  string valor; //lexema
-  int tipo; //para diferenciar entre diferentes lexemas de una misma clase léxica
+  int clase;      //léxica.
+  string valor;   //lexema.
+  int tipo;       //para diferenciar entre diferentes lexemas de una misma clase léxica.
 
+  //Constructor por omisión.
   Token(){}
 
+  //Constructor con paso de parámetros.
   Token(int clase, string valor, int tipo){
     this->clase = clase;
     this->valor = valor;
     this->tipo = tipo;
   }
 
-    /**
-    * Inicialización de tokens.
-    */
-    Token crea_token(int clase, string valor, int tipo){
-      return Token(clase, valor, tipo);
-    }
+  /**
+  * Inicialización de tokens.
+  */
+  Token crea_token(int clase, string valor, int tipo){
+    return Token(clase, valor, tipo);
+  }
 
-    int equals(Token t1, int clase) {
-      return t1.clase == clase;
-    }
+  /**
+   * Función que determina si dos tokens son iguales.
+   */
+  int equals(Token t1, int clase) {
+    return t1.clase == clase;
+  }
 
 };
 
+//Definición de las constantes usadas en el analizador léxico.
 const int COMA = 1001;
 const int PCOMA = 1002;
 const int LLAIZQ = 1003;

@@ -1,9 +1,20 @@
+/**
+ * Proyecto Final: Compiladores
+ * Figueroa Sandoval Gerardo Emiliano
+ * Hernández Ferreiro Enrique Ehecatl
+ * López Soto Ramses Antonio
+ * Quintero Villeda Erik
+*/
+
 #ifndef SIMBOLO_H
 #define SIMBOLO_H
 #include <string>
 #include <list>
 using namespace std;
 
+/**
+ * Estructura que definie los simbolos.
+ */
 struct Simbolo {
     string id;
     int dir;
@@ -11,8 +22,10 @@ struct Simbolo {
     int var;
     list<int> args;
 
+    //Construcción por omisión.
     Simbolo(){}
 
+    //Construcctor con paso de parámetros.
     Simbolo(string id, int dir, int type, int var, list<int> args){
     	this -> id = id;
     	this -> dir = dir;
@@ -28,6 +41,10 @@ struct Simbolo {
       return Simbolo(id, dir, type, var, args);
     }
 
+    /**
+     * Función que convierte un símbolo a cadena para su impresión.
+     * @return cadena que representa un simbolo.
+     */
     string printSimbolo(){
         string simb = "           ";
         string list = "[";

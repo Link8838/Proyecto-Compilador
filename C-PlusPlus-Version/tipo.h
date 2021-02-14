@@ -1,9 +1,22 @@
+/**
+ * Proyecto Final: Compiladores
+ * Figueroa Sandoval Gerardo Emiliano
+ * Hernández Ferreiro Enrique Ehecatl
+ * López Soto Ramses Antonio
+ * Quintero Villeda Erik
+*/
+
 #ifndef TIPTIPE_H
 #define TIPTIPE_H
 #include <string>
 #include <list>
 using namespace std;
 
+/**
+ * Estructura que define el Tipo.
+ * (se llama TipTipe porque nunca compiló con el nombre Tipo)
+ * (no sabemos por qué).
+ */
 struct TipTipe {
     int id;
     string tipo;
@@ -11,8 +24,10 @@ struct TipTipe {
     int elem;
     int tipoBase;
 
+    //Constructor por omisión del Tipo.
     TipTipe(){}
 
+    //Constructor con paso de parámetros.
     TipTipe(int id, string tipo, int tam, int elem, int tipoBase){
         this -> id = id;
         this -> tipo = tipo;
@@ -28,6 +43,10 @@ struct TipTipe {
       return TipTipe(id, tipo, tam, elem, tipoBase);
     }
 
+    /**
+     * Función que convierte un tipo a cadena.
+     * @return cadena con la representación del Tipo.
+     */
     string printTipo(){
         string simb = "         ";        
         string spc = " ";

@@ -488,8 +488,8 @@ char *yytext;
 #line 1 "lexer.lex"
 #define INITIAL 0
 #line 2 "lexer.lex"
-  /**
- * Práctica 7: Compiladores
+/**
+ * Proyecto Final: Compiladores
  * Figueroa Sandoval Gerardo Emiliano
  * Hernández Ferreiro Enrique Ehecatl
  * López Soto Ramses Antonio
@@ -652,7 +652,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 30 "lexer.lex"
+#line 29 "lexer.lex"
 
 
 #line 659 "lex.yy.c"
@@ -748,277 +748,277 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 32 "lexer.lex"
+#line 31 "lexer.lex"
 { ECHO; return token.crea_token(COMA, yytext,-1); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "lexer.lex"
+#line 32 "lexer.lex"
 { ECHO; return token.crea_token(PCOMA, yytext,-1); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "lexer.lex"
+#line 33 "lexer.lex"
 { ECHO; return token.crea_token(LLAIZQ, yytext,-1); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "lexer.lex"
+#line 34 "lexer.lex"
 { ECHO; return token.crea_token(LLADER, yytext,-1); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "lexer.lex"
+#line 35 "lexer.lex"
 { ECHO; return token.crea_token(INT, yytext,-1); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "lexer.lex"
+#line 36 "lexer.lex"
 { ECHO; return token.crea_token(FLOAT, yytext,-1);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 38 "lexer.lex"
+#line 37 "lexer.lex"
 { ECHO; return token.crea_token(CHAR, yytext,-1);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 39 "lexer.lex"
+#line 38 "lexer.lex"
 { ECHO; return token.crea_token(DOUBLE, yytext,-1);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 40 "lexer.lex"
+#line 39 "lexer.lex"
 { ECHO; return token.crea_token(VOID, yytext,-1);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 41 "lexer.lex"
+#line 40 "lexer.lex"
 { ECHO; return token.crea_token(FUNC, yytext,-1);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 42 "lexer.lex"
+#line 41 "lexer.lex"
 { ECHO; return token.crea_token(PIZQ, yytext,-1);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 43 "lexer.lex"
+#line 42 "lexer.lex"
 { ECHO; return token.crea_token(PDER, yytext,-1);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 44 "lexer.lex"
+#line 43 "lexer.lex"
 { ECHO; return token.crea_token(IF, yytext,-1);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 45 "lexer.lex"
+#line 44 "lexer.lex"
 { ECHO; return token.crea_token(ELSE, yytext,-1);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 46 "lexer.lex"
+#line 45 "lexer.lex"
 { ECHO; return token.crea_token(WHILE, yytext,-1);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 47 "lexer.lex"
+#line 46 "lexer.lex"
 { ECHO; return token.crea_token(BREAK, yytext,-1);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 48 "lexer.lex"
+#line 47 "lexer.lex"
 { ECHO; return token.crea_token(SWITCH, yytext,-1);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 49 "lexer.lex"
+#line 48 "lexer.lex"
 { ECHO; return token.crea_token(CASE, yytext,-1);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 50 "lexer.lex"
+#line 49 "lexer.lex"
 { ECHO; return token.crea_token(DEFAULT, yytext,-1);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 51 "lexer.lex"
+#line 50 "lexer.lex"
 { ECHO; return token.crea_token(RETURN, yytext,-1);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 52 "lexer.lex"
+#line 51 "lexer.lex"
 { ECHO; return token.crea_token(PRINT, yytext,-1);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 53 "lexer.lex"
+#line 52 "lexer.lex"
 { ECHO; return token.crea_token(SCAN, yytext,-1);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 54 "lexer.lex"
+#line 53 "lexer.lex"
 { ECHO; return token.crea_token(DO, yytext,-1);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 55 "lexer.lex"
+#line 54 "lexer.lex"
 { ECHO; return token.crea_token(DOSPUNTOS, yytext,-1);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 56 "lexer.lex"
+#line 55 "lexer.lex"
 { ECHO; return token.crea_token(OR, yytext,-1);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 57 "lexer.lex"
+#line 56 "lexer.lex"
 { ECHO; return token.crea_token(AND, yytext,-1);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 58 "lexer.lex"
+#line 57 "lexer.lex"
 { ECHO; return token.crea_token(IGUAL, yytext,-1);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 59 "lexer.lex"
+#line 58 "lexer.lex"
 { ECHO; return token.crea_token(DIFF, yytext,-1);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 60 "lexer.lex"
+#line 59 "lexer.lex"
 { ECHO; return token.crea_token(MENOR, yytext,-1);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 61 "lexer.lex"
+#line 60 "lexer.lex"
 { ECHO; return token.crea_token(MENOREQ, yytext,-1);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 62 "lexer.lex"
+#line 61 "lexer.lex"
 { ECHO; return token.crea_token(MAYOR, yytext,-1);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 63 "lexer.lex"
+#line 62 "lexer.lex"
 { ECHO; return token.crea_token(MAYOREQ, yytext,-1);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 64 "lexer.lex"
+#line 63 "lexer.lex"
 { ECHO; return token.crea_token(ASIG, yytext,-1);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 65 "lexer.lex"
+#line 64 "lexer.lex"
 { ECHO; return token.crea_token(MAS, yytext,-1);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 66 "lexer.lex"
+#line 65 "lexer.lex"
 { ECHO; return token.crea_token(MENOS, yytext,-1);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 67 "lexer.lex"
+#line 66 "lexer.lex"
 { ECHO; return token.crea_token(MULT, yytext,-1);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 68 "lexer.lex"
+#line 67 "lexer.lex"
 { ECHO; return token.crea_token(DIV, yytext,-1);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 69 "lexer.lex"
+#line 68 "lexer.lex"
 { ECHO; return token.crea_token(MOD, yytext,-1);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 70 "lexer.lex"
+#line 69 "lexer.lex"
 { ECHO; return token.crea_token(NEGA, yytext,-1);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 71 "lexer.lex"
+#line 70 "lexer.lex"
 { ECHO; return token.crea_token(NEG, yytext,-1);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 72 "lexer.lex"
+#line 71 "lexer.lex"
 { ECHO; return token.crea_token(TRUE, yytext,-1);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 73 "lexer.lex"
+#line 72 "lexer.lex"
 { ECHO; return token.crea_token(FALSE, yytext,-1);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 74 "lexer.lex"
+#line 73 "lexer.lex"
 { ECHO; return token.crea_token(CIZQ, yytext,-1);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 75 "lexer.lex"
+#line 74 "lexer.lex"
 { ECHO; return token.crea_token(CDER, yytext,-1);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 76 "lexer.lex"
+#line 75 "lexer.lex"
 { ECHO; return token.crea_token(NUM, yytext, 1); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 77 "lexer.lex"
+#line 76 "lexer.lex"
 { ECHO; return token.crea_token(NUM, yytext, 2); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 78 "lexer.lex"
+#line 77 "lexer.lex"
 { ECHO; return token.crea_token(NUM, yytext, 2); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 79 "lexer.lex"
+#line 78 "lexer.lex"
 { ECHO;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 80 "lexer.lex"
+#line 79 "lexer.lex"
 { ECHO;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 81 "lexer.lex"
+#line 80 "lexer.lex"
 { ECHO; return token.crea_token(ID, yytext,-1); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 82 "lexer.lex"
+#line 81 "lexer.lex"
 { ECHO; return token.crea_token(STR, yytext,-1); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 83 "lexer.lex"
+#line 82 "lexer.lex"
 { ECHO; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 85 "lexer.lex"
+#line 84 "lexer.lex"
 { puts("\n\n====================================================================\n>Fin de analisis Lexico."); 
 return token.crea_token(FIN, "",-1); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 87 "lexer.lex"
+#line 86 "lexer.lex"
 { printf("\n\n >Error lexico en la linea: %i\n", yylineno); exit(1); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 89 "lexer.lex"
+#line 88 "lexer.lex"
 ECHO;
 	YY_BREAK
 #line 1025 "lex.yy.c"
@@ -1903,5 +1903,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 89 "lexer.lex"
+#line 88 "lexer.lex"
 

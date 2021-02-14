@@ -1,10 +1,10 @@
 /**
- * Práctica 7: Compiladores
+ * Proyecto Final: Compiladores
  * Figueroa Sandoval Gerardo Emiliano
  * Hernández Ferreiro Enrique Ehecatl
  * López Soto Ramses Antonio
  * Quintero Villeda Erik
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,34 +16,31 @@
 #include <fstream>
 #include "parser.h"
 
-//Programar a parte las funciones auxiliares
 using namespace std;
 extern Token yylex();
 extern int yylineno;
 
+//Atributos auxiliares del compilador.
 int auxlinea = 0;
 string auxID = " ";
 string marco = "====================================================================";
-
 int dir = -1;
 int iE = 0;
 int iI = 0;
 int iT = 0;
-
+stack<list<TipTipe>> pilaTablaTiposAux;
+stack<list<Simbolo>> pilaTablaSimbolosAux;
+//Atributos del compilador.
 Token tA;
 TipTipe tipo;
 Simbolo simb;
-
 list<TipTipe> tablaTipos;
 list<Simbolo> tablaSimbolos;
 list<int> listaRetorno;
-
 stack<list<TipTipe>> pilaTablaTipos;
 stack<list<Simbolo>> pilaTablaSimbolos;
 stack<string> tablaCadenas;
-
 list<vector<string>> codigo;
-
 
 
 int eat(int clase){
@@ -59,8 +56,7 @@ void parse(Token tk, string name, string flag) {
   construirTablaTipos();
   Programa();
   escribirCodigo(obtenerCodigo(), name);
-  mostrarTablas(flag);
-  //printf("\nDIRECCION: %i\n", dir);
+  mostrarTablas(flag);  
 }
 
 void Programa(){
@@ -74,13 +70,11 @@ void Programa(){
   }
 }
 
-void Declaraciones(){
-  //printf("Aguacate %s\n",tA -> valor);
+void Declaraciones(){  
   if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT)){//FIRST DE TIPO
     int lista_varTipoH = Tipo();
     Lista_Var(lista_varTipoH);
-    if (eat(PCOMA)) {
-      //printf("Aguacate %s\n",tA -> valor);
+    if (eat(PCOMA)) {      
       tA = yylex();
       Declaraciones();
     }else{
@@ -91,20 +85,17 @@ void Declaraciones(){
 
 int Tipo(){
 //  printf("\n**PROGRAMA**\n");
-  int compuestoBase = Basico();
-  //printf("Aguacate %i\n", compuestoTipo);
+  int compuestoBase = Basico();  
   int tipoTipo = Compuesto(compuestoBase);
   return tipoTipo;
 }
 
 void Lista_Var(int lista_varTipoH){
-  if (eat(ID)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(ID)) {    
     auxID = tA.valor;
     int linea = yylineno;
     if(!buscarIDTS(tA.valor)){      
-      list<int> arrgs;
-      //printf(" INSERTAR: %s %i\n", tA.valor.c_str(), lista_varTipoH);
+      list<int> arrgs;      
       insertarSimbolo(tA.valor, dir, lista_varTipoH, 0, arrgs);//QUIZÁ NO ES 0
       dir += getTamTT(lista_varTipoH);
     } else {
@@ -119,24 +110,19 @@ void Lista_Var(int lista_varTipoH){
 
 int Basico(){
   int basicoTipo = -1;
-  if (eat(INT)) {
-    //printf("INT: %s\n",tA -> valor);
+  if (eat(INT)) {    
     basicoTipo = 1;    
     tA = yylex();
-  } else if (eat(FLOAT)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(FLOAT)) {    
     basicoTipo = 2;    
     tA = yylex();
-  } else if (eat(CHAR)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(CHAR)) {    
     basicoTipo = 4;    
     tA = yylex();
-  } else if (eat(DOUBLE)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(DOUBLE)) {    
     basicoTipo = 2;    
     tA = yylex();
-  } else if (eat(VOID)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(VOID)) {    
     basicoTipo = 0;    
     tA = yylex();
   } else {
@@ -148,22 +134,18 @@ int Basico(){
 int Compuesto(int base){
   int compuestoTipo = -1;
   int tamArr, tipeArr;
-  if (eat(CIZQ)) {
-      //printf("%s\n",tA -> valor);
+  if (eat(CIZQ)) {      
       tA = yylex();
-      if (eat(NUM)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(NUM)) {        
         string lex = tA.valor;        
         tamArr = atoi(tA.valor.c_str());
         tipeArr = tA.tipo;
         if(tipeArr == 1){
           tA = yylex();
-          if (eat(CDER)) {
-            //printf("%s\n",tA -> valor);
+          if (eat(CDER)) {            
             TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,tipeArr);
             insertarTipoTop(array);
-            compuestoTipo = tipeArr;//COSAS RARAS   
-            //printf("COMPUESTO: %s %i %i\n", lex.c_str(), compuestoTipo, tipeArr);     
+            compuestoTipo = tipeArr;//COSAS RARAS               
             tA = yylex();
             Compuesto(base);
           } else {
@@ -182,11 +164,9 @@ int Compuesto(int base){
 }
 
 void Lop(int lista_varTipoH){
-  if (eat(COMA)) {
-      //printf("%s\n",tA -> valor);
+  if (eat(COMA)) {      
       tA = yylex();
-      if (eat(ID)) {
-          //printf("%s\n",tA -> valor);
+      if (eat(ID)) {          
             int linea = yylineno;
             if(!buscarIDTS(tA.valor)){
               list<int> arrgs;
@@ -201,10 +181,8 @@ void Lop(int lista_varTipoH){
   }
 }
 
-void Funciones(){
-  //printf("**FUNCIONES!**%s\n");
-  if (eat(FUNC)) {
-      //printf("%s\n",tA -> valor);      
+void Funciones(){  
+  if (eat(FUNC)) {      
       list<Simbolo> nuevaTablaSimb;
       list<TipTipe> nuevaTablaTipo;
       list<int> nuevaListaRetorno;
@@ -216,26 +194,25 @@ void Funciones(){
       dir = 0;      
       tA = yylex();
       int tipoTipo = Tipo();
-      int linea;
-      //printf("FUNCIONES TIPO: %i\n", tipoTipo);
-      if (eat(ID)) {
-          //printf("%s\n",tA -> valor);
+      int linea;      
+      if (eat(ID)) {          
           string idAux = tA.valor;
           linea = yylineno;
           tA = yylex();
-          if (eat(PIZQ)) {
-              //printf("%s\n",tA -> valor);
+          if (eat(PIZQ)) {              
               tA = yylex();
               list<int> argumentosLista = Argumentos();
-              if (eat(PDER)) {
-                  //printf("%s\n",tA -> valor);
+              if (eat(PDER)) {                  
                   tA = yylex();
                   Bloque();
+                  list<TipTipe> tipAux = pilaTablaTipos.top();
+                  list<Simbolo> simAux = pilaTablaSimbolos.top();
+                  pilaTablaTiposAux.push(tipAux);
+                  pilaTablaSimbolosAux.push(simAux);
                   pilaTablaSimbolos.pop();
                   pilaTablaTipos.pop(); 
                   pilaDir.pop(); 
-                  if(!buscarIDTS(idAux)){
-                    //printf("BUSCAR ID FUNC\n");
+                  if(!buscarIDTS(idAux)){                    
                     if(tipoTipo != 0 && listaRetorno.size() <= 0){
                       errorSemantico("Falta valor de retorno de la funcion:", linea, idAux);                      
                     } else {
@@ -273,13 +250,11 @@ list<int> Argumentos(){
 }
 
 void Bloque(){
-  if (eat(LLAIZQ)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(LLAIZQ)) {    
     tA = yylex();
     Declaraciones();
     Instrucciones();
-    if (eat(LLADER)) {
-        //printf("%s\n",tA -> valor);
+    if (eat(LLADER)) {        
         tA = yylex();
     }else{
       errorSintactico();
@@ -292,8 +267,7 @@ void Bloque(){
 list<int> Lista_Args(){
   int tipoTipo = Tipo();
   list<int> lista_argsLista;
-  if (eat(ID)) {
-      //printf("%s\n",tA -> valor);
+  if (eat(ID)) {      
     int linea = yylineno;
     if(!buscarIDTS(tA.valor)){
       list<int> arrgs;
@@ -315,12 +289,10 @@ list<int> Lista_Args(){
 
 list<int> Lista_ArgsP(list<int> lista_argsPListaH){
   list<int> lista_argsPListaS;
-  if (eat(COMA)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(COMA)) {    
     tA = yylex();
     int tipoTipo = Tipo();
-    if (eat(ID)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(ID)) {      
       int linea = yylineno;
       if(!buscarIDTS(tA.valor)){
         list<int> arrgs;
@@ -353,18 +325,15 @@ string Instrucciones(){
 }
 
 string Sentencia(string siguiente){
-  if (eat(IF)) {
-      //printf("%s\n",tA -> valor);
+  if (eat(IF)) {      
       tA = yylex();
-      if (eat(PIZQ)) {
-          //printf("%s\n",tA -> valor);
+      if (eat(PIZQ)) {          
           tA = yylex();
           string vddr = nuevaEtiqueta();
           string fls = nuevoIndice();
           boolReturn bulif = Bool(vddr,fls);
           generarCodigo(bulif.verdadero," ", " ", " ");
-          if (eat(PDER)) {
-              //printf("%s\n",tA -> valor);
+          if (eat(PDER)) {              
               tA = yylex();
               string sig = Sentencia(siguiente);
               list<string> listaIndices;
@@ -376,18 +345,15 @@ string Sentencia(string siguiente){
       }else{
         errorSintactico();
       }
-  } else if (eat(RETURN)) {
-      //printf("%s\n",tA -> valor);
+  } else if (eat(RETURN)) {      
       tA = yylex();
       Ret();
   } else if (eat(ID)) {
     piernaIzquieraExodiaReturn piE = Pierna_Izquierda_Exodia();    
-    if (eat(ASIG)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(ASIG)) {      
       tA = yylex();
       boolReturn bulPI = Bool(" "," ");
-      if (eat(PCOMA)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(PCOMA)) {        
         tA = yylex();
         if(equivalentes(piE.tipo, bulPI.tipo)){
           //Reducir;
@@ -401,19 +367,16 @@ string Sentencia(string siguiente){
     }else{
       errorSintactico();
     }
-  } else if (eat(WHILE)) {
-    //printf("%s\n",tA -> valor);    
+  } else if (eat(WHILE)) {    
     tA = yylex();
-    if (eat(PIZQ)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PIZQ)) {      
       tA = yylex();
       string boolVddr = nuevaEtiqueta();
       string boolFls = siguiente;
       generarCodigo(siguiente," ", " ", " ");
       boolReturn bulw = Bool(boolVddr, boolFls);
       generarCodigo(bulw.dir," ", " ", " ");
-      if (eat(PDER)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(PDER)) {        
         tA = yylex();        
         siguiente = nuevaEtiqueta();
         string sigw;
@@ -425,21 +388,17 @@ string Sentencia(string siguiente){
     }else{
       errorSintactico();
     }
-  } else if (eat(DO)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(DO)) {    
     tA = yylex();
     siguiente = nuevaEtiqueta();
     string sigdo = Sentencia(siguiente);
     generarCodigo(sigdo," ", " ", " ");
-    if (eat(WHILE)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(WHILE)) {      
       tA = yylex();
-      if (eat(PIZQ)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(PIZQ)) {        
         tA = yylex();
         Bool(nuevaEtiqueta(),sigdo);
-        if (eat(PDER)) {
-          //printf("%s\n",tA -> valor);
+        if (eat(PDER)) {          
           tA = yylex();
         }else{
           errorSintactico();
@@ -450,11 +409,9 @@ string Sentencia(string siguiente){
     }else{
       errorSintactico();
     }
-  } else if (eat(BREAK)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(BREAK)) {    
     tA = yylex();
-    if (eat(PCOMA)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PCOMA)) {      
       tA = yylex();
       generarCodigo("goto"," ", " ", siguiente);
     }else{
@@ -462,25 +419,20 @@ string Sentencia(string siguiente){
     }
   } else if (eat(LLAIZQ)) {
     Bloque();
-  } else if (eat(SWITCH)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(SWITCH)) {    
     tA = yylex();
-    if (eat(PIZQ)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PIZQ)) {      
       tA = yylex();
       boolReturn bul = Bool(" "," ");
-      if (eat(PDER)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(PDER)) {        
         tA = yylex();
-        if (eat(LLAIZQ)) {
-          //printf("%s\n",tA -> valor);
+        if (eat(LLAIZQ)) {          
           tA = yylex();
           casosReturn casos = Casos(siguiente);
           generarCodigo("goto"," ", " ", bul.dir);
           generarCodigo(bul.dir," ", " ", " ");
           //generarCodigo(casos.prueba, " ", " ", " ");
-          if (eat(LLADER)) {
-            //printf("%s\n",tA -> valor);
+          if (eat(LLADER)) {            
             tA = yylex();
           }else{
             errorSintactico();
@@ -494,19 +446,16 @@ string Sentencia(string siguiente){
     }else{
       errorSintactico();
     }
-  } else if (eat(PRINT)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(PRINT)) {    
     tA = yylex();
     expReturn exp = Exp();
-    if (eat(PCOMA)) {
-        //printf("%s\n",tA -> valor);
+    if (eat(PCOMA)) {        
         tA = yylex();
         generarCodigo("print",exp.dir," ", " ");
     }else{
       errorSintactico();
     }
-  } else if (eat(SCAN)) {
-      //printf("%s\n",tA -> valor);
+  } else if (eat(SCAN)) {      
       tA = yylex();
       if (eat(ID)) {
         piernaIzquieraExodiaReturn piES = Pierna_Izquierda_Exodia();
@@ -516,8 +465,7 @@ string Sentencia(string siguiente){
       }
   }else{
     errorSintactico();
-  }
-  //printf("SIG%s\n", siguiente.c_str());
+  }  
   return siguiente;
 }
 
@@ -533,8 +481,7 @@ string InstruccionesP(){
 }
 
 void Sent(list<string> listaI, string sig){
-  if (eat(ELSE)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(ELSE)) {    
     string siguiente = sig;
     tA = yylex();
     string sentenSiguiente = Sentencia(siguiente);
@@ -551,14 +498,12 @@ void Ret(){
     expReturn exp = Exp();
     listaRetorno.push_front(exp.tipo);
     generarCodigo("return", " ", " ", exp.dir);
-    if (eat(PCOMA)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PCOMA)) {      
       tA = yylex();
     }else{
       errorSintactico();
     }
-  } else if (eat(PCOMA)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(PCOMA)) {    
     listaRetorno.push_front(0);
     generarCodigo("return"," "," ","void");
     tA = yylex();
@@ -569,8 +514,7 @@ void Ret(){
 
 piernaIzquieraExodiaReturn Pierna_Izquierda_Exodia(){
   piernaIzquieraExodiaReturn piE;
-  if (eat(ID)) {
-    //printf("%s\n",tA -> valor);    
+  if (eat(ID)) {    
     string idLexVal = tA.valor;
     auxlinea = yylineno;
     auxID = tA.valor;
@@ -594,8 +538,7 @@ boolReturn Bool(string v, string f){
     string boolVddr = v;
     string boolFls = f;
     if(strcmp(v.c_str(), " ") == 0 && strcmp(f.c_str(), " ") == 0){
-      boolVddr = nuevoIndice();      
-      //printf(" BOOL ");
+      boolVddr = nuevoIndice();            
     }
     boolFls = nuevoIndice();
     combReturn comb = Comb(boolVddr, boolFls);
@@ -637,8 +580,7 @@ expReturn Exp(){
     termReturn term = Term();
     exReturn ex = Ex(term.tipo, term.dir);
     exp.tipo = term.tipo;
-    exp.dir = term.dir;
-    //printf(" EXP: %i\n", exp.tipo);
+    exp.dir = term.dir;    
   } else {
     errorSintactico();
   }
@@ -647,15 +589,12 @@ expReturn Exp(){
 
 casoReturn Caso(string siguiente){
   casoReturn caso;
-  if (eat(CASE)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(CASE)) {    
     tA = yylex();
-    if (eat(NUM)) {
-        //printf("%s\n",tA -> valor);
+    if (eat(NUM)) {        
       string numeroLexVal = tA.valor;
       tA = yylex();
-      if (eat(DOSPUNTOS)) {
-        //printf("%s\n",tA -> valor);
+      if (eat(DOSPUNTOS)) {        
         caso.inicio = nuevaEtiqueta();
         caso.siguiente = nuevaEtiqueta();
         tA = yylex();
@@ -677,11 +616,9 @@ casoReturn Caso(string siguiente){
 
 predeterminadoReturn Predeterminado(string siguiente){
   predeterminadoReturn predeterminado;
-  if (eat(DEFAULT)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(DEFAULT)) {    
     tA = yylex();
-    if (eat(DOSPUNTOS)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(DOSPUNTOS)) {      
       predeterminado.inicio = nuevaEtiqueta();
       predeterminado.siguiente = nuevaEtiqueta();
       tA = yylex();
@@ -719,20 +656,16 @@ pttReturn Ptt(string pttBase){
 
 localizationReturn Localization(string localizationBase){
   localizationReturn localization;
-  if (eat(CIZQ)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(CIZQ)) {    
     tA = yylex();
     boolReturn bul = Bool(" "," ");
-    int boolTipo = bul.tipo;
-    //printf("TIPO BOOL: %s %i\n", localizationBase.c_str(), boolTipo);
-    if (eat(CDER)) {
-      //printf("%s\n",tA -> valor);
+    int boolTipo = bul.tipo;    
+    if (eat(CDER)) {      
       tA = yylex();
       localPReturn localP = LocalP(localizationBase, -1, " ");
       if(buscarIDTS(localizationBase)){
         if(boolTipo == 1){//bool.tipo = int
-          int tipoTemp = getTipoTS(localizationBase);
-          //printf("TIPO: %i\n", tipoTemp);
+          int tipoTemp = getTipoTS(localizationBase);          
           if(getNombre(tipoTemp, "ARRAY")){
             localP.tipo = pilaTablaTipos.top().front().tipoBase;
             localP.dir = nuevaTemporal();            
@@ -784,8 +717,7 @@ combReturn Comb(string vddr, string fls){
 
 boolPReturn BoolP(boolPReturn boolpAux){
   boolPReturn boolp;
-  if (eat(OR)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(OR)) {    
     string boolVddr = nuevoIndice();
     string boolFls = nuevoIndice();
     tA = yylex();
@@ -830,8 +762,7 @@ relReturn Rel(string relVddr, string relFls){
     string fls = relFls;
     expReturn exp = Exp();
     xpReturn xp = Xp(vddr, fls, exp.tipo);
-    rel.tipo = xp.tipo;
-    //printf("REL: %i\n", rel.tipo);
+    rel.tipo = xp.tipo;    
     rel.dir = xp.dir;
   } else {
     errorSintactico();
@@ -841,8 +772,7 @@ relReturn Rel(string relVddr, string relFls){
 
 iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
   iguPReturn igup;
-  if (eat(IGUAL)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(IGUAL)) {    
     tA = yylex();
     relReturn rel = Rel(relVddr, relFls);
     igup.verdadero = relVddr;
@@ -859,8 +789,7 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
       errorSemantico("Tipos incompatibles: ", auxlinea, auxID);
     }
     igup = IguP(igup.verdadero, igup.falso, tipoH, igup.dir);
-  } else if (eat(DIFF)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(DIFF)) {    
     tA = yylex();
     relReturn rel = Rel(relVddr, relFls);
     igup.verdadero = relVddr;
@@ -888,8 +817,7 @@ iguPReturn IguP(string relVddr, string relFls, int tipoH, string direc){
 
 combPReturn CombP(combPReturn combPP){
   combPReturn combp;
-  if (eat(AND)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(AND)) {    
     tA = yylex();
     string iglVddr = nuevoIndice();
     string iglFls = nuevoIndice();
@@ -915,8 +843,7 @@ combPReturn CombP(combPReturn combPP){
 
 xpReturn Xp(string v, string f, int tipo){
   xpReturn xp;
-  if (eat(MENOR)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(MENOR)) {    
     tA = yylex();
     expReturn exp = Exp();
     if(equivalentes(tipo, exp.tipo)){
@@ -930,8 +857,7 @@ xpReturn Xp(string v, string f, int tipo){
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
-  } else if (eat(MENOREQ)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(MENOREQ)) {    
     tA = yylex();
     expReturn exp = Exp();
     if(equivalentes(tipo, exp.tipo)){
@@ -945,8 +871,7 @@ xpReturn Xp(string v, string f, int tipo){
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
-  } else if (eat(MAYOREQ)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(MAYOREQ)) {    
     tA = yylex();
     expReturn exp = Exp();
     if(equivalentes(tipo, exp.tipo)){
@@ -960,8 +885,7 @@ xpReturn Xp(string v, string f, int tipo){
     } else {
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
-  } else if (eat(MAYOR)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(MAYOR)) {    
     tA = yylex();
     expReturn exp = Exp();
     if(equivalentes(tipo, exp.tipo)){
@@ -990,8 +914,7 @@ termReturn Term(){
     unarioReturn unario = Unario();
     terPReturn terp = TerP(unario.tipo, unario.dir);
     term.tipo = terp.tipo;
-    term.dir = terp.dir;
-    //printf(" TERM: %i\n", term.tipo);
+    term.dir = terp.dir;    
   } else {
     errorSintactico();
   }
@@ -1000,8 +923,7 @@ termReturn Term(){
 
 exReturn Ex(int tipe, string dire){
   exReturn ex;
-  if (eat(MAS)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(MAS)) {    
     tA = yylex();
     auxlinea = yylineno;
     termReturn term = Term();
@@ -1015,8 +937,7 @@ exReturn Ex(int tipe, string dire){
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
     Ex(ex.tipo, ex.dir);
-  } else if (eat(MENOS)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(MENOS)) {    
     tA = yylex();
     auxlinea = yylineno;
     termReturn term = Term();
@@ -1039,15 +960,13 @@ exReturn Ex(int tipe, string dire){
 
 unarioReturn Unario(){
   unarioReturn unario;
-  if (eat(NEGA)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(NEGA)) {    
     tA = yylex();
     unarioReturn unaAux = Unario();
     unario.dir = nuevaTemporal();
     unario.tipo = unaAux.tipo;
     generarCodigo("!", unaAux.dir, " ", unario.dir);
-  } else if (eat(MENOS)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(MENOS)) {    
     tA = yylex();
     unarioReturn unaAux = Unario();
     unario.dir = nuevaTemporal();
@@ -1056,8 +975,7 @@ unarioReturn Unario(){
   } else if (eat(ID) || eat(NUM) || eat(PIZQ) || eat(STR) || eat(TRUE) || eat(FALSE)) {
     factorReturn factor = Factor();
     unario.tipo = factor.tipo;
-    unario.dir = factor.dir;
-    //printf(" UNARIO: %i\n", unario.tipo);
+    unario.dir = factor.dir;    
   }else{
     errorSintactico();
   }
@@ -1066,8 +984,7 @@ unarioReturn Unario(){
 
 terPReturn TerP(int tipe, string dire){
   terPReturn terp;
-  if (eat(MULT)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(MULT)) {    
     tA = yylex();
     auxlinea = yylineno;
     unarioReturn unario = Unario();
@@ -1081,8 +998,7 @@ terPReturn TerP(int tipe, string dire){
       errorSemantico("Tipos no compatibles: ", auxlinea, auxID);
     }
     TerP(terp.tipo, terp.dir);
-  } else if (eat(DIV)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(DIV)) {    
     tA = yylex();
     auxlinea = yylineno;
     unarioReturn unario = Unario();
@@ -1119,50 +1035,40 @@ terPReturn TerP(int tipe, string dire){
 
 factorReturn Factor(){
   factorReturn factor;
-  if (eat(ID)) {
-    //printf("%s\n",tA -> valor);    
-    string idLexVal = tA.valor;
-    //printf(" FACTOR: %i\n",tA.valor); 
+  if (eat(ID)) {    
+    string idLexVal = tA.valor;    
     auxlinea = yylineno;
     auxID = tA.valor;
     tA = yylex();    
     faaccReturn faacc = Faacc(idLexVal);
     factor.dir = faacc.dir;
-    factor.tipo = faacc.tipo;
-    //printf(" FACTOR: %s %i\n",idLexVal.c_str(), faacc.tipo);
-  }else if (eat(PIZQ)) {
-    //printf("%s\n",tA -> valor);
+    factor.tipo = faacc.tipo;    
+  }else if (eat(PIZQ)) {    
     auxID = tA.valor;
     tA = yylex();
     boolReturn bul = Bool(" "," ");
-    if (eat(PDER)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PDER)) {      
       factor.tipo = bul.tipo;
       factor.dir = bul.dir;
       tA = yylex();
     }else{
       errorSintactico();
     }
-  } else if (eat(NUM)) {
-    //printf("%s\n",tA -> valor);
-    factor.tipo = tA.tipo;
-    //printf("NUM: %s %i\n", tA.valor.c_str(), factor.tipo);
+  } else if (eat(NUM)) {    
+    factor.tipo = tA.tipo;    
     factor.dir = tA.valor.c_str();
     auxID = tA.valor;
     tA = yylex();
-  } else if (eat(TRUE)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(TRUE)) {    
     auxID = tA.valor;
     factor.dir = "TRUE";
-    factor.tipo = tA.tipo;/////////////////////////////////////////////////////////////CHECAR AQUI IBA UN "1"
+    factor.tipo = tA.tipo;
     tA = yylex();
-  } else if (eat(FALSE)) {
-    //printf("%s\n",tA -> valor);
+  } else if (eat(FALSE)) {    
     factor.dir = "FALSE";
-    factor.tipo = tA.tipo;/////////////////////////////////////////////////////////////CHECAR AQUI IBA UN "1"    
+    factor.tipo = tA.tipo;    
     tA = yylex();
-  } else if (eat(STR)) {
-    //printf("FACTOR: %s\n",tA.valor);
+  } else if (eat(STR)) {    
     auxID = tA.valor;
     tablaCadenas.push(tA.valor);
     factor.dir = tablaCadenas.top();
@@ -1181,13 +1087,11 @@ faaccReturn Faacc(string faaccBase){
     faacc.dir = nuevaTemporal();
     faacc.tipo = localization.tipo;
     generarCodigo(faacc.dir, "=", faaccBase, localization.dir);
-  }else if (eat(PIZQ)){
-    //printf("%s\n",tA -> valor);
+  }else if (eat(PIZQ)){    
     tA = yylex();
     auxlinea = yylineno;
     list<int> parametrosLista = Parametros();
-    if (eat(PDER)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(PDER)) {      
       if(buscarIDTSFondo(faaccBase)){
         if(getVarPTSFondo(faaccBase) == 2){
           list<int> args = getVarListPTSFondo(faaccBase);
@@ -1209,10 +1113,8 @@ faaccReturn Faacc(string faaccBase){
       errorSintactico();
     }
   } else {
-    faacc.dir = faaccBase;
-    //printf(" FAACC: %s ", faaccBase.c_str());
-    faacc.tipo = getTipoTS(faaccBase);
-    //printf(" FAACC: %i\n", faacc.tipo);
+    faacc.dir = faaccBase;    
+    faacc.tipo = getTipoTS(faaccBase);    
   }
   return faacc;
 }
@@ -1237,8 +1139,7 @@ list<int> Lista_Param(){
 
 list<int> ListP(list<int> listaH){
   list<int> listaS;
-  if (eat(COMA)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(COMA)) {    
     tA = yylex();
     boolReturn bul = Bool(" "," ");
     listaH.push_front(bul.tipo);
@@ -1251,13 +1152,11 @@ list<int> ListP(list<int> listaH){
 
 localPReturn LocalP(string localPBase, int localPTipo, string direc){
   localPReturn localP;  
-  if (eat(CIZQ)) {
-    //printf("%s\n",tA -> valor);
+  if (eat(CIZQ)) {    
     tA = yylex();
     boolReturn bul = Bool(" "," ");
     int boolTipo = bul.tipo;
-    if (eat(CDER)) {
-      //printf("%s\n",tA -> valor);
+    if (eat(CDER)) {      
       tA = yylex();
       localPReturn temp = LocalP(localPBase, localPTipo, direc);
       if(buscarIDTS(localPBase)){
@@ -1308,8 +1207,7 @@ void construirTablaTipos(){
   tablaTipos.push_back(tipoI);
   tablaTipos.push_back(tipoD);
   tablaTipos.push_back(tipoF);
-  tablaTipos.push_back(tipoC);
-  //printf("A ver si jala: %s\n", tipoV.tipo.c_str());
+  tablaTipos.push_back(tipoC);  
 }
 
 void construirTablaSimbolos(){
@@ -1318,8 +1216,7 @@ void construirTablaSimbolos(){
 
 int buscarIDTS(string id){
   int busca = 0;
-  for(Simbolo s : pilaTablaSimbolos.top()){
-    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+  for(Simbolo s : pilaTablaSimbolos.top()){    
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
       busca = 1;      
     }    
@@ -1330,8 +1227,7 @@ int buscarIDTS(string id){
 int buscarIDTSFondo(string id){
   int busca = 0;
   list<Simbolo> aux = fondo(pilaTablaSimbolos);
-  for(Simbolo s : aux){
-    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+  for(Simbolo s : aux){    
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
       busca = 1;      
     }    
@@ -1340,24 +1236,21 @@ int buscarIDTSFondo(string id){
 }
 
 void insertarTipoTop(TipTipe tipooo){  
-  pilaTablaTipos.top().push_front(tipooo);
+  pilaTablaTipos.top().push_front(tipooo);  
 }
 
 void insertarSimbolo(string id, int dir, int type, int var, list<int> args){
   Simbolo simb = Simbolo(id, dir, type, var, args);
-  pilaTablaSimbolos.top().push_front(simb);
-  //printf("\nINSERTAR SIMB: %s TAM: %i\n", id.c_str(), pilaTablaSimbolos.top().size());
+  pilaTablaSimbolos.top().push_front(simb);  
 }
 
 int equivalentesLista(int tipo){
   int equi = 1;
-  for(int i : listaRetorno){
-    //printf("\nLISTA RETORNO: %i, %i\n", i, tipo);
+  for(int i : listaRetorno){    
     if(i != tipo){
       equi = 0;
     }
-  }
-  //printf("EQUIVALENTES LISTA\n");
+  }  
   return equi;
 }
 
@@ -1387,14 +1280,12 @@ string nuevaTemporal(){
 
 int getTipoTS(string id){
   int tipo = -1;
-  for(Simbolo s : pilaTablaSimbolos.top()){
-    //printf(" [SIMBOLO: %s %s %i %i ] ", id.c_str(), s.id.c_str(), s.type, s.var);
+  for(Simbolo s : pilaTablaSimbolos.top()){    
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
 //      printf(" [SIMBOLO: %s %i %i ] ", s.id.c_str(), s.type, s.var);
       tipo = s.type;    
     }
-  }
-  //printf(" [SIMBOLO: %s %i ] ", id.c_str(), tipo);  
+  }  
   return tipo;
 }
 
@@ -1436,8 +1327,7 @@ list<Simbolo> fondo(stack<list<Simbolo>> ts){
 int getVarPTSFondo(string id){
   int var = -1;
   list<Simbolo> aux = fondo(pilaTablaSimbolos);
-  for(Simbolo s : aux){
-    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+  for(Simbolo s : aux){    
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
       var = s.var;
       break;
@@ -1449,8 +1339,7 @@ int getVarPTSFondo(string id){
 list<int> getVarListPTSFondo(string id){
   list<int> args;
   list<Simbolo> aux = fondo(pilaTablaSimbolos);
-  for(Simbolo s : aux){
-    //printf("\nBUSCA: %s, %s\n", s.id.c_str(), id.c_str());
+  for(Simbolo s : aux){    
     if(strcmp(s.id.c_str(), id.c_str()) == 0){
       args = s.args;
       break;
@@ -1469,8 +1358,7 @@ int equivalenteListas(list<int> uno, list<int> dos){
   return compare;
 }
 
-int equivalentes(int tipoH, int unarioH){
-  //printf("\n EQUIVALENTES: %i, %i\n", tipoH, unarioH);
+int equivalentes(int tipoH, int unarioH){  
   if(tipoH == unarioH){
     return 1;
   } else {
@@ -1531,6 +1419,15 @@ string verTablasSimbolos(){
     }
     pilaTablaSimbolos.pop();
   }
+
+  while(!pilaTablaSimbolosAux.empty()){
+    for(Simbolo s : pilaTablaSimbolosAux.top()){
+        tabla += s.printSimbolo();
+        tabla += "\n";      
+    }
+    pilaTablaSimbolosAux.pop();
+  }
+
   return tabla;
 }
 
@@ -1547,6 +1444,15 @@ string verTablasTipos(){
     }
     pilaTablaTipos.pop();
   }
+
+  while(!pilaTablaTiposAux.empty()){
+    for(TipTipe t : pilaTablaTiposAux.top()){
+        tabla += t.printTipo();
+        tabla += "\n";      
+    }
+    pilaTablaTiposAux.pop();
+  }
+
   return tabla;
 }
 
@@ -1558,5 +1464,3 @@ void mostrarTablas(string flag){
     printf("\n%s\n%s\n%s\n", marco.c_str(), tablass.c_str(), marco.c_str());
   } 
 }
-
-//int main(){return 0;}
