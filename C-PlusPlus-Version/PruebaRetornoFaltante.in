@@ -1,0 +1,11 @@
+<*  Esto es un archivo
+    de prueba           *>
+
+func int decl(int a, int b, double c, char e) {
+    int x;
+
+    x = 2;
+
+    --Task Fail Succesfully
+
+}

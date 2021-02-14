@@ -1,0 +1,8 @@
+<* Esto es un archivo
+   de prueba de IDs  *>
+
+func void decl(int a, int b, double c, char e) {
+    int x;
+    int y;
+    int b;
+}
