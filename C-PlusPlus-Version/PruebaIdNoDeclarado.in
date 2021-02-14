@@ -1,0 +1,12 @@
+<* Esto es un archivo
+   de prueba de Asig  *>
+
+func void decl(int a, int b, double c, char e) {
+    int x;
+    int y;
+    int z;
+
+    x = 2;
+    y = 2 * 2;
+    w = 0.123;
+}

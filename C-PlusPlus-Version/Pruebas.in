@@ -1,0 +1,101 @@
+<*  Esto es un archivo
+    de prueba           *>
+
+int a;
+double b;
+float c;
+char d;
+void v;
+int[0][0] doRe;
+
+func void decl(int a, int b, double c, char e) {
+    int x;
+    int y;
+    int z;
+    float w;
+    double f;
+    char aa;
+    char[1] re;
+    x = 2;
+    y = 2 * 2;
+    w = 0.123;
+    f = 1.2;
+    a = a;
+}
+
+func int wail(int a, int b){
+    int x, y, z;
+
+    --Esto es un comentario.
+
+    while(x != y || y == y) {
+        x = a * b;
+        y = -a;
+        z = 23;
+    }
+    return z;
+}
+
+func float idDoWhile(void v){
+    float x;
+    float y;
+
+    if(x < y || y > x || x <= y || y >= x)  
+        print aguacate;
+
+    return 3.0;
+
+    do {
+        x = x + y;
+    } while(!false)
+}
+
+func double suitch(double a, double b) {
+    double x,y;
+    double w;
+
+    switch(a){
+        case 1:
+            print awa;
+            break;
+        case 2:
+            scan w
+            break;
+        default:            
+            return w;
+    }
+    return w;
+}
+
+func char bools(int a, int b){
+    int x, y, z;
+    char car;
+
+    if((a || b) && (b || a)){
+        car = "OR";
+    }
+
+    if((a && b) || (b && a)){
+        car = "AND";
+    }
+
+    while(true) {
+        x = a * b;
+        y = a / b;
+        x = a % b;
+        z = -z;
+    }
+    return car;
+}
+
+<* Funcion que no hace nada
+   como el resto de las demas *>
+func int[10] arrays(void v){
+    int[10] ar1;
+    double [10] ar2;
+    float [10] ar3;
+    char [10] ar4;
+    void [10] ar5;
+
+    return ar1;
+}

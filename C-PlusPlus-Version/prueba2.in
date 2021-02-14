@@ -1,8 +1,0 @@
-<*  Esto es un archivo
-    de prueba           *>
-
-func void hola(void d){
-    while(true){
-        print aguacate;
-    }
-}

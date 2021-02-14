@@ -1,5 +1,5 @@
 CXX=g++
-BIN=recursive_parser
+BIN=ulises++
 INC=headers
 
 SRC=$(wildcard *.c)

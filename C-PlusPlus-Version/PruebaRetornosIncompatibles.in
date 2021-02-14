@@ -1,0 +1,10 @@
+<*  Esto es un archivo
+    de prueba           *>
+
+func void decl(int a, int b, double c, char e) {
+    int x;
+
+    x = 2;
+
+    return x;
+}

@@ -142,10 +142,10 @@ int Compuesto(int base){
         tipeArr = tA.tipo;
         if(tipeArr == 1){
           tA = yylex();
-          if (eat(CDER)) {            
-            TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,tipeArr);
-            insertarTipoTop(array);
-            compuestoTipo = tipeArr;//COSAS RARAS               
+          if (eat(CDER)) {
+            compuestoTipo = tipeArr;//COSAS RARAS   
+            TipTipe array = TipTipe(5,"ARRAY",tamArr,-1,base);
+            insertarTipoTop(array);            
             tA = yylex();
             Compuesto(base);
           } else {

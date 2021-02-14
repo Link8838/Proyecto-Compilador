@@ -1,0 +1,12 @@
+func int wail(int a, void b){
+    int x, y, z;
+
+    --Esto es un comentario.
+
+    while(x != y || y == y) {
+        x = a * b;
+        y = -a;
+        z = 23;
+    }
+    return z;
+}
