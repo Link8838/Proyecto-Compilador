@@ -109,10 +109,10 @@ struct boolReturn{
     int tipo;
 
     //Constructor por omisión.
-    boolPReturn(){}
+    boolReturn(){}
 
     //Constructro con paso de parámetros.
-    boolPReturn(string dir,string verdadero, string falso, int tipo){
+    boolReturn(string dir,string verdadero, string falso, int tipo){
         this -> dir = dir;
         this -> verdadero = verdadero;
         this -> falso = falso;
