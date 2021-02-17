@@ -63,9 +63,10 @@ void Programa(){
   pilaTablaTipos.push(tablaTipos);
   pilaTablaSimbolos.push(tablaSimbolos);
   dir = 0;
-  Declaraciones();  
-  Funciones();
-  if(!eat(FIN)){
+  if(eat(FLOAT) || eat(CHAR) || eat(DOUBLE) || eat(VOID) || eat(INT) || eat(FUNC)){
+    Declaraciones();  
+    Funciones();
+  } else if(!eat(FIN)){
     errorSintactico();
   }
 }
@@ -600,7 +601,7 @@ casoReturn Caso(string siguiente){
         tA = yylex();
         Instrucciones();
         generarCodigo("if", numeroLexVal, "goto", caso.inicio);
-        caso.prueba = "if  goto ";
+        caso.prueba = "goto ";
         generarCodigo(caso.inicio, " ", " "," ");
       }else{
         errorSintactico();
@@ -624,7 +625,7 @@ predeterminadoReturn Predeterminado(string siguiente){
       tA = yylex();
       Instrucciones();
       generarCodigo("goto", " ", " ", predeterminado.inicio);
-      predeterminado.prueba = " goto ";
+      predeterminado.prueba = "goto";
       generarCodigo(predeterminado.inicio, " ", " "," ");
     }else{
       errorSintactico();
